@@ -1,0 +1,105 @@
+<div *ngIf="isLoading">
+    <app-loading-spinner></app-loading-spinner>
+</div>
+
+<div *ngIf="!isLoading">
+    <div *ngIf="alertMessage != '' " class="alert alert-{{alertType}} alert-dismissible" role="alert">
+        <strong>{{messageType}}!</strong> {{ alertMessage }}    
+    </div>
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+        <form [formGroup]="form" class="row g-3">
+            <!-- <div class="row"> -->
+                <div class="col-md-3">
+                    <label for="wasteStream" class="form-label">Waste Stream</label>
+                    <input type="text" class="form-control" formControlName="wasteStream" id="wasteStream">
+                    <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+                </div>
+                <div class="col-md-3">
+                    <label for="packageType" class="form-label">Container</label>
+                    <input type="text" class="form-control" id="packageType" formControlName="packageType">
+                </div>
+                <div class="col-md-2">
+                    <label for="weight" class="form-label">Net Weight</label>
+                    <input type="text" class="form-control" id="weight" formControlName="weight">
+                </div>
+                
+                <!-- <div class="col-md-4">
+                    <label for="itemDescription" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="itemDescription" formControlName="itemDescription">
+                </div> -->
+                <div class="col-md-3">
+                    <label for="itemDescription" class="form-label">Holding Bay to Store</label>
+                    <!-- <input type="text" class="form-control" id="itemDescription" formControlName="itemDescription"> -->
+                    <select id="inputState" (change)="selectedBay($event)" formControlName="outBayId"  class="form-select">
+                    <option selected>Choose...</option>
+                    <option 
+                        *ngFor="let outBay of outBays"
+                        value="{{ outBay.id}}"> {{ outBay.name}}</option>
+                    </select>
+                </div>
+            <!-- </div> -->
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-auto">
+                        <button 
+                            type="submit" 
+                            (click)="createJob()" 
+                            class="btn btn-primary"
+                            [disabled]="!form.valid">Submit</button>
+                    </div>
+                    <div class="col-auto" *ngIf="!displayJobs">
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary"
+                            (click)="toggleDisplayJobs()"
+                            [disabled]="listOfJobs.length === 0">View Jobs</button>
+                    </div>
+                    <div class="col-auto" *ngIf="displayJobs">
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary"
+                            (click)="toggleDisplayJobs()">Hide Jobs</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    
+        <div class="table-responsive mt-3" *ngIf="displayJobs">
+            <table class="table table-stripped " style="width:100%">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Waste Stream</th>
+                    <th scope="col">Net Weight</th>
+                    <th scope="col">Container</th>
+                    <th scope="col">Description</th>
+                    <!-- <th scope="col">Weight</th>
+                    <th scope="col">Further Processing</th> -->
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                  
+                  <ng-container *ngFor="let job of listOfJobs; let i = index">
+                    <tr>
+                      <th> {{ i+1 }}</th>
+                      <td>{{ job.wasteStream}}</td>
+                      <td>{{ job.weight}}</td>
+                      <td>{{ job.packageType}}</td>
+                      <td>{{ job.itemDescription }}</td>
+                      <!-- <td>{{ job.weight}}</td> -->
+                     
+                      
+                      <!-- <td>
+                        <button type="button" 
+                        class="btn btn-sm btn-primary" 
+                        > Further Process?</button>
+                      </td> -->
+                    </tr>
+                  </ng-container>
+                 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

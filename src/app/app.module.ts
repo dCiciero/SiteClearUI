@@ -3,14 +3,45 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SideNavComponent } from './side-nav/side-nav.component';
+import { TopNavComponent } from './top-nav/top-nav.component';
+import { ContentPageComponent } from './content-page/content-page.component';
+import { LoginComponent } from './login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { YardComponent } from './yard/yard.component';
+import { AdminComponent } from './admin/admin.component';
+import { HttpClientModule } from '@angular/common/http';
+import { JobDetailComponent } from './job-detail/job-detail.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { SignedOffItemComponent } from './signed-off-item/signed-off-item.component';
+import { UnsignedOffItemComponent } from './unsigned-off-item/unsigned-off-item.component';
+import { NewjobComponent } from './newjob/newjob.component';
+import { JobQuantityWeightComponent } from './job-quantity-weight/job-quantity-weight.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SideNavComponent,
+    TopNavComponent,
+    ContentPageComponent,
+    LoginComponent,
+    DashboardComponent,
+    YardComponent,
+    AdminComponent,
+    JobDetailComponent,
+    LoadingSpinnerComponent,
+    SignedOffItemComponent,
+    UnsignedOffItemComponent,
+    NewjobComponent,
+    JobQuantityWeightComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,33 @@
+<div class="form-area p-3">
+    <form class="">
+      <div class="mb-3">
+        <label for="txtDescription" class="form-label">Description</label>
+        <input type="text" class="form-control" id="txtDescription" aria-describedby="txtDescr">
+      </div>
+    </form>
+
+    <div class="table-wrapper table-responsive">
+        <table class="table table-stripped" style="width:100%">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Description</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <!-- <tbody class="table-group-divider">
+              <tr *ngFor="let job of paginatedItems; let i = index">
+                <th> {{ i+1 }}</th>
+                <td>{{ job.type}}</td>
+                <td>{{ job.description}}</td>
+                <td>{{ job.resource}}</td>
+                <td>{{ job.asset}}</td>
+                <td> <button type="submit" class="btn btn-sm btn-primary"> Detail</button> </td>
+              </tr>
+            </tbody> -->
+          </table>
+          <button class="btn btn-success btn-sm">Save Entry</button>
+    </div>
+  </div>

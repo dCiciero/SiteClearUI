@@ -1,0 +1,130 @@
+<div class="wrapper" id="gaga">
+    <h6>{{ driverNmae}}</h6>
+    <form [formGroup]="jobQuantityForm">
+        <div class="row table-responsive">
+            <table class="table table-stripped" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Waste</th>
+                    <th scope="col">Container Type</th>
+                    <th scope="col">Weight</th>
+                    <th scope="col">Net Weight</th>
+                    <!-- <th scope="col">Action</th> -->
+                    <!-- <th scope="col">Further Processing</th> -->
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider" formArrayName="formElements">
+                  <ng-container *ngFor="let job of formElements.controls; let i = index" [formGroupName]="i">
+                    <tr>
+                      <th>{{ i + 1 }}</th>
+                      <td>{{ wasetName }}</td>
+                      <td>
+                        <select id="inputState" (change)="getSelectedContainer()" formControlName="selectedContainerType"  class="form-select">
+                            <option selected>Choose...</option>
+                            <option 
+                                *ngFor="let item of containerTypes"
+                                [ngValue]="item"
+                                value="{{ item.id}}"> {{ item.name}}
+                            </option>
+                        </select>
+                      </td>
+                      <td>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            id="txtweight"
+                            (keyup.enter)="calculateNetWeight(i)"
+                            formControlName="weight"
+                            aria-describedby="txtweight"
+                        />
+                        </td>
+                        <td>
+                            {{ job.get('netWeight')?.value}}
+                        </td>
+                        <!-- <td>
+                            <button type="button" 
+                                class="btn btn-primary" 
+                                (click)="saveEntry(job)"
+                                [disabled]="job.get('status')?.value.toLowerCase() === 'saved'"
+                            >
+                                Save
+                            </button>
+                        </td> -->
+                      
+                    </tr>
+                  </ng-container>
+                  
+                </tbody>
+              </table>
+              <div class="col-md-3">
+                <button 
+                    class="btn btn-sm btn-primary" 
+                    (click)="saveEntry(formElements.controls)"
+                    [disabled]="!isFormFilled"
+                >
+                    Save Entry
+                </button>
+              </div>
+        </div>
+    </form>
+
+    
+   
+</div>
+
+<!-- =================================== -->
+<!-- <div class="modal fade" id="gaga" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title fs-5" id="staticBackdropLabel">Capture Weights</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row table-responsive">
+                <table class="table table-stripped" style="width: 100%">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Waste</th>
+                        <th scope="col">Container Type</th>
+                        <th scope="col">Weight</th>
+                        <th scope="col">Net Weight</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <ng-container *ngFor="let job of itemQuantities; let i = index">
+                        <tr>
+                          <th>{{ i + 1 }}</th>
+                          <td>
+                            <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          id="txtweight"
+                          (keyup.enter)="checkWeight(job)"
+                          
+                          aria-describedby="txtweight"
+                        />
+                         
+                          
+                        </tr>
+                      </ng-container>
+                      
+                    </tbody>
+                  </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" 
+              class="btn btn-primary"
+              >Sign Off</button>
+          </div>
+        </div>
+    </div>
+</div> -->
+
+
+    <!-- ==================================== -->

@@ -1,0 +1,248 @@
+<div *ngIf="isLoading">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<div *ngIf="!isLoading" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+  <div class="wrapper p-3">
+    <h4 class="mb-2">Operations Yard</h4>
+    <!-- <p>Welcome to the yard processing page!</p> -->
+    <div
+      *ngIf="alertMessage != ''"
+      class="alert alert-{{ alertType }} alert-dismissible"
+      role="alert"
+    >
+      <strong>{{ messageType }}!</strong> {{ alertMessage }}
+      <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+    </div>
+    <div class="col-md-2 mb-2">
+      <div class="form-check">
+        <input class="form-check-input"  type="checkbox" [value]="isToday" (change)="setToday()" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault">
+          Get Today's Job
+        </label>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <!-- <div class="col"> -->
+      
+      <div class="col-md-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <div class="input-group date" id="datepicker">
+          <input
+            type="date"
+            [(ngModel)]="startDate"
+            class="form-control"
+            id="startDate"
+            [disabled]="isToday"
+          />
+          <!-- <span class="input-group-append">
+            <span class="input-group-text bg-light d-block">
+              <i class="fa fa-calendar"></i>
+            </span>
+          </span> -->
+        </div>
+      </div>
+      <!-- </div> -->
+      <!-- <div class="col"> -->
+      <div class="col-md-3">
+        <label for="endDate" class="form-label">End Date</label>
+        <div class="input-group date" id="datepicker">
+          <input
+            type="date"
+            [(ngModel)]="endDate"
+            class="form-control"
+            id="endDate"
+            [disabled]="isToday"
+          />
+          <!-- <span class="input-group-append">
+            <span class="input-group-text bg-light d-block">
+              <i class="fa fa-calendar"></i>
+            </span>
+          </span> -->
+        </div>
+      </div>
+      <!-- </div> -->
+    </div>
+    <!-- end of row -->
+    <div class="mb-3">
+      <button
+        type="button"
+        (click)="getJobsByDate()"
+        class="btn btn-success"
+        [disabled]="startDate == null || endDate == null"
+      >
+        View jobs for selected period
+      </button>
+    </div>
+
+    <div class="row table-responsive" *ngIf="jobs.length > 0">
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label for="txtDriverName" class="form-label">Enter Driver Name</label>
+          <input type="email" class="form-control" 
+            id="txtDriverName"
+            [(ngModel)]="filterText" 
+            (ngModelChange)="onFilterChange(filterText)"
+            placeholder="Filter by driver name">
+        </div>
+      </div>
+      <table class="table table-stripped" style="width: 100%">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Driver</th>
+            <th scope="col">Vehicle</th>
+            <th scope="col">Ref. No</th>
+            <th scope="col">Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Action</th>
+            <!-- <th scope="col">Further Processing</th> -->
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <ng-container *ngFor="let jobs of paginatedItems; let i = index">
+            <tr *ngIf="jobs.jobDetail.isConfirmed === false">
+              <th>{{ i + 1 }}</th>
+              <td>{{ jobs.job.resource }}</td>
+              <td>{{ jobs.job.asset }}</td>
+              <td>{{ jobs.job.ref }}</td>
+              <td>{{ jobs.job.type }}</td>
+              <td>{{ jobs.jobDetail.itemDescription }}</td>
+              <td>{{ jobs.jobDetail.lineQuantity }}</td>
+              <td>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="txtweight"
+                  (keyup.enter)="checkWeight(jobs)"
+                  [(ngModel)]="jobs.jobDetail.weight"
+                  aria-describedby="txtweight"
+                />
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#staticBackdrop"
+                  (click)="addWeight(jobs)"
+                >
+                  Weigh & Confirm
+                </button>
+              </td>
+              <!-- <td>
+                  <button type="button" 
+                  class="btn btn-sm btn-primary" 
+                  > Further Process</button>
+                </td> -->
+            </tr>
+          </ng-container>
+          
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation" >
+        <ul class="pagination justify-content-center">
+          <li
+            class="page-item"
+            [class.disabled]="currentPage === 1"
+            *ngIf="currentPage !== 1"
+          >
+            <a
+              class="page-link btn btn-sm btn-outline-primary"
+              (click)="goToPage(1)"
+            >
+              First
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a
+              class="page-link btn btn-sm btn-outline-primary mx-1"
+              (click)="goToPage(currentPage - 1)"
+              >{{ currentPage }}</a
+            >
+          </li>
+          <li
+            class="page-item"
+            [class.disabled]="currentPage === getTotalPages()"
+          >
+            <a
+              class="page-link btn btn-sm me-1 rounded btn-outline-primary"
+              (click)="goToPage(currentPage + 1)"
+              >{{ currentPage + 1 }}</a
+            >
+          </li>
+          <li
+            class="page-item"
+            [class.disabled]="currentPage === getTotalPages()"
+            *ngIf="currentPage !== getTotalPages()"
+          >
+            <a
+              class="page-link btn btn-sm btn-outline-primary"
+              (click)="goToPage(getTotalPages())"
+              >Last</a
+            >
+          </li>
+        </ul>
+        <!-- ========================================= -->
+        <!-- <ul class="pagination justify-content-center mt-3">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+            </li>
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i + 1 === currentPage">
+              <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages()">
+              <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+            </li>
+          </ul> -->
+
+        <!-- ================================== -->
+        <!-- <ul class="pagination justify-content-center mt-3">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+            </li>
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i + 1 === currentPage">
+              <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+            </li>
+          </ul> -->
+      </nav>
+    </div>
+
+    
+  </div>
+  <!-- End of wrapper -->
+</div>
+<!-- <app-job-quantity-weight #modal [quantityCount]="quantityCount" *ngIf="showModal"></app-job-quantity-weight> -->
+ <!-- MODAL -->
+<!-- <ng-template #modalQ><div class="modal fade"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"> -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" id="">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title fs-5" id="staticBackdropLabel">Capture Weights</h3>
+          <button type="button" class="btn-close" (click)="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <app-job-quantity-weight *ngIf="showModal" 
+            [quantityCount]="quantityCount"
+            [wasetName]="wasteName"
+            [invoiceId]="invoiceId"
+            [jobDetail]="weighedJob"
+            [driverNmae]="driverName"></app-job-quantity-weight>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()" data-bs-dismiss="modal">Cancel</button>
+          <!-- <button type="button" 
+            class="btn btn-primary"
+            >Sign Off</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- </ng-template> -->
+
