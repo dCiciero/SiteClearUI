@@ -3,7 +3,7 @@
 </div>
 <div *ngIf="!isLoading" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
   <div class="wrapper p-3">
-    <h4 class="mb-2">Operations Yard</h4>
+    <h5 class="mb-2">Operations Yard</h5>
     <!-- <p>Welcome to the yard processing page!</p> -->
     <div
       *ngIf="alertMessage != ''"
@@ -95,13 +95,13 @@
             <th scope="col">Type</th>
             <th scope="col">Description</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Weight</th>
+            <!-- <th scope="col">Weight</th> -->
             <th scope="col">Action</th>
             <!-- <th scope="col">Further Processing</th> -->
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <ng-container *ngFor="let jobs of paginatedItems; let i = index">
+          <ng-container *ngFor="let jobs of paginatedItems; let i = index" >
             <tr *ngIf="jobs.jobDetail.isConfirmed === false">
               <th>{{ i + 1 }}</th>
               <td>{{ jobs.job.resource }}</td>
@@ -110,7 +110,7 @@
               <td>{{ jobs.job.type }}</td>
               <td>{{ jobs.jobDetail.itemDescription }}</td>
               <td>{{ jobs.jobDetail.lineQuantity }}</td>
-              <td>
+              <!-- <td>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -119,16 +119,25 @@
                   [(ngModel)]="jobs.jobDetail.weight"
                   aria-describedby="txtweight"
                 />
-              </td>
+              </td> -->
               <td>
                 <button
                   type="button"
                   class="btn btn-sm btn-primary"
                   data-bs-toggle="modal" 
                   data-bs-target="#staticBackdrop"
-                  (click)="addWeight(jobs)"
+                  (click)="processWeight(jobs)"
+                  *ngIf="!jobs.jobDetail.isWeightAdded"
                 >
-                  Weigh & Confirm
+                  Process Weight
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-success"
+                  (click)="confirmJob(jobs)"
+                  *ngIf="jobs.jobDetail.isWeightAdded"
+                >
+                  Confirm Job
                 </button>
               </td>
               <!-- <td>
@@ -220,11 +229,11 @@
  <!-- MODAL -->
 <!-- <ng-template #modalQ><div class="modal fade"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"> -->
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" id="">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" id="qtyModal">
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title fs-5" id="staticBackdropLabel">Capture Weights</h3>
-          <button type="button" class="btn-close" (click)="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close cls-btn" (click)="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <app-job-quantity-weight *ngIf="showModal" 
@@ -235,7 +244,7 @@
             [driverNmae]="driverName"></app-job-quantity-weight>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary cls-btn" (click)="closeModal()" data-bs-dismiss="modal">Cancel</button>
           <!-- <button type="button" 
             class="btn btn-primary"
             >Sign Off</button> -->

@@ -13,9 +13,12 @@ export interface JobDetails {
     costPrice: number;
     unitPrice: number;
     netPrice: number;
+    processingBayId: number;
+    processingBay: any;
     isSignedOff: boolean;
     isConfirmed: boolean;
     furtherProcessing: boolean | null;
+    isWeightAdded: boolean | null;
     startDate: string | null;
     endDate: string | null;
     resource: string | null;

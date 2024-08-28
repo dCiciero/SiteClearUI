@@ -1,7 +1,10 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { JobQuantity } from '../models/job-quantity.model';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../services/toast.service';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-job-quantity-weight',
@@ -21,21 +24,13 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
   containerTypes: any[]=[];
   selectedContainer: any;
   isFormFilled: boolean = false;
+  weightForAll: number = 0;
+  applyAll: boolean = false
 
-  constructor(private fb: FormBuilder, private apiService: AuthService) {}
+  constructor(private fb: FormBuilder, private apiService: AuthService, private toastService: ToastService) {}
 
   ngOnInit(): void {
-    // this.jobQuantityForm = this.fb.group({
-    //   name: ['', Validators.required],
-    //   itemContainerId: ['', Validators.required],
-    //   itemContainerWeight: ['', Validators.required],
-    //   weight: ['', Validators.required],
-    //   netWeight: ['', Validators.required],
-    //   invoiceItemId: ['', Validators.required],
-    //   financialLineItemId: ['', Validators.required],
-    //   selectedContainerType: ['', Validators.required],
-    // });
-
+   
     console.log(this.quantityCount);
     this.itemQuantities =  Array.from(Array(this.quantityCount).keys());
     Array.from(Array(5).keys()).forEach((res)=> {console.log(res);
@@ -71,7 +66,6 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
         invoiceItemId: ['', Validators.required],
         financialLineItemId: ['', Validators.required],
         selectedContainerType: ['', Validators.required],
-        status:['']
       }));
     });
   }
@@ -89,6 +83,7 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
 
   getSelectedContainer() {
     console.log(this.jobQuantityForm.value);
+    console.log(this.selectedContainer);
     // console.log(this.jobQuantityForm.get('selectedContainerType')?.value);
     
   }
@@ -104,7 +99,6 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
       control.get('netWeight')?.setValue(netWeight);
       console.log(this.checkFormCompleteness());
       this.isFormFilled = this.checkFormCompleteness();
-      
       
       ;
     }
@@ -126,48 +120,89 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
   saveEntry(data: any) {
     
     console.log(data);
-    console.log(this.jobDetail);
-    this.jobDetail.isConfirmed = true;
-    return;
     
-    const item: JobQuantity = {
-      ContainerTypeId: data.value.selectedContainerType.id,
-      ContainerWeight: data.value.selectedContainerType.weight,
-      FinancialLineItemId: 11,
-      InvoiceItemId: this.invoiceId,
-      NetWeight: data.value.netWeight,
-      Weight: data.value.weight,
-      Name: this.wasetName,
-      id: 2
-    };
-    console.log(data.value);
-    console.log(item);
-    this.apiService.saveJobQuantity(item).subscribe(
-      (resData) =>{
-        if (resData.isSuccess) {
-          this.apiService.displayAlert("success", "Record saved successfully", "Success");
-          console.log('Saved successfully');
-          data.value.status = 'saved';
-          console.log(data.value);
-          
-          
-          setTimeout(() => {
-            this.apiService.hideAlert();
-          }, 5000);
-        }
-      },
-      (error) => {
-        this.apiService.displayAlert("danger", "Error saving record", "Error");
-          setTimeout(() => {
-            this.apiService.hideAlert();
-          }, 5000);
-      }
-    )
-    // data.value.financialLineItemId='21';
-    // console.log(data.value.financialLineItemId);
+
+    const formData = this.formElements.controls; // This gets the data (formData) from each row in the table
+    // var filledForm: boolean = true;
+    console.log(formData);
+    // return;
+    let listOfJobQuantities: JobQuantity[]=[]
+    // The below process will need to be modified to pass the object as an array rather than passing individaul object
+    try {
+      formData.forEach((data) => {
+        const item: JobQuantity = {
+          ContainerTypeId: data.value.selectedContainerType.id,
+          ContainerWeight: data.value.selectedContainerType.weight,
+          FinancialLineItemId: 11,
+          InvoiceItemId: this.invoiceId,
+          NetWeight: data.value.netWeight,
+          Weight: data.value.weight,
+          Name: this.wasetName
+        };
+        listOfJobQuantities.push(item);
+        // this.processSave(data);
+      });
+
+      console.log(listOfJobQuantities);
+      this.processSave(listOfJobQuantities);
+      
+      // return;
+    } catch (error) {
+      this.jobDetail.isWeightAdded = false;
+    }
+   
+    
     
   }
 
+  processSave(data: any) {
+    // const item: JobQuantity = {
+    //   ContainerTypeId: data.value.selectedContainerType.id,
+    //   ContainerWeight: data.value.selectedContainerType.weight,
+    //   FinancialLineItemId: 11,
+    //   InvoiceItemId: this.invoiceId,
+    //   NetWeight: data.value.netWeight,
+    //   Weight: data.value.weight,
+    //   Name: this.wasetName
+    // };
+    console.log(data);
+    // console.log(item);
+    this.apiService.saveJobQuantity(data).subscribe(
+      (resData) =>{
+        if (resData.isSuccess) {
+          // this.apiService.displayAlert("success", "Record saved successfully", "Success");
+          this.toastService.showSuccess('Record saved successfully');
+          console.log('Saved successfully');
+          console.log(resData.result);
+          
+          console.log(this.jobDetail);
+          // this.jobDetail.isConfirmed = true;
+          console.log(data.value);
+          this.jobDetail.isWeightAdded = true;
+          setTimeout(() => {
+            var modalCloseBtn = document.getElementsByClassName('cls-btn')[0] as HTMLElement
+            if (modalCloseBtn) {
+              modalCloseBtn.click();
+            }
+          }, 2000);
+          
+          
+          // setTimeout(() => {
+          //   this.apiService.hideAlert();
+          // }, 5000);
+        }
+      },
+      (error) => {
+        // this.apiService.displayAlert("danger", "Error saving record", "Error");
+        this.toastService.showError("Error saving record");
+          // setTimeout(() => {
+          //   this.apiService.hideAlert();
+          // }, 5000);
+      }
+    )
+  }
+
+  // This method is used to check if all details(row) have been entered
   checkFormCompleteness(): boolean {
     const formData = this.formElements.controls;
     var filledForm: boolean = true;
@@ -178,6 +213,38 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
       }
     });
     return filledForm;
+  }
+
+  toggleApplyToAll(evt: any) {
+    console.log(evt);
+    this.applyAll = !this.applyAll;
+    if (!this.applyAll) {
+      this.jobQuantityForm.reset();
+      this.weightForAll = 0;
+      this.selectedContainer = null;
+      this.isFormFilled = this.checkFormCompleteness();
+    }
+    console.log(this.applyAll);
+    
+  }
+
+  applyWeights() {
+    let weight = (document.getElementById('txtAllWeight') as HTMLInputElement)?.value
+    let formControls = this.formElements.controls;
+    console.log(weight);
+    console.log(this.weightForAll);
+    console.log(this.jobQuantityForm);
+    console.log(formControls.length);
+    formControls.forEach((ctrl: any) => {
+      ctrl.controls.weight.patchValue(weight);
+      ctrl.controls.selectedContainerType.patchValue(this.selectedContainer);
+      // let netW = this.weightForAll - this.selectedContainer.weight
+      ctrl.controls.netWeight.patchValue(this.weightForAll - this.selectedContainer.weight);
+      console.log(ctrl.controls);
+      
+    })
+    this.isFormFilled = this.checkFormCompleteness();
+    
   }
 
 }

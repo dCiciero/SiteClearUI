@@ -14,6 +14,29 @@ export class DashboardComponent implements OnInit {
   labelData: any[]=[];
   realData: any[]=[];
   colorData: any[]=[];
+
+  hazWasteData: any[]=[];
+  labelDataHaz: any[]=[];
+  colorDataHaz: any[]=[];
+
+  weeWasteData: any[]=[];
+  labelDataWee: any[]=[];
+  colorDataWee: any[]=[];
+
+  dryWasteData: any[]=[];
+  labelDataDry: any[]=[];
+  colorDataDry: any[]=[];
+
+  clinicalWasteData: any[]=[];
+  labelDataClinical: any[]=[];
+  colorDataClinical: any[]=[];
+
+  hasWasteID = 5
+  weeWasteID = 6
+  clinicalWasteID = 7
+  dryWasteID = 7
+
+
   constructor(private service: AuthService){}
 
   ngOnInit(): void {
@@ -25,16 +48,50 @@ export class DashboardComponent implements OnInit {
       {
         for (let i = 0; i < this.chartData.length; i++)
         {
-          const color = this.getRandomColor();
-          console.log(color);
-          console.log(this.chartData[i].name);
-          this.labelData.push(this.chartData[i].name);
-          this.realData.push(this.chartData[i].capacity);
-          this.colorData.push(color);
+          if (this.chartData[i].categoryId === this.hasWasteID) {
+            const color = this.getRandomColor();
+            // console.log(color);
+            console.log(this.chartData[i].name);
+            this.labelDataHaz.push(this.chartData[i].name);
+            this.hazWasteData.push(this.chartData[i].capacity);
+            this.colorDataHaz.push(color);
+          }
+
+          if (this.chartData[i].categoryId === this.weeWasteID) {
+            const color = this.getRandomColor();
+            // console.log(color);
+            console.log(this.chartData[i].name);
+            this.labelDataWee.push(this.chartData[i].name);
+            this.weeWasteData.push(this.chartData[i].capacity);
+            this.colorDataWee.push(color);
+          }
+
+          if (this.chartData[i].categoryId === this.clinicalWasteID) {
+            const color = this.getRandomColor();
+            // console.log(color);
+            console.log(this.chartData[i].name);
+            this.labelDataClinical.push(this.chartData[i].name);
+            this.clinicalWasteData.push(this.chartData[i].capacity);
+            this.colorDataClinical.push(color);
+          }
+
+          if (this.chartData[i].categoryId === this.dryWasteID) {
+            const color = this.getRandomColor();
+            // console.log(color);
+            console.log(this.chartData[i].name);
+            this.labelDataDry.push(this.chartData[i].name);
+            this.dryWasteData.push(this.chartData[i].capacity);
+            this.colorDataDry.push(color);
+          }
+          
         }
-        this.RenderChart(this.labelData, this.realData, this.colorData, 'bar', 'barchart');
+        this.RenderChart(this.labelDataHaz, this.hazWasteData, this.colorDataHaz, 'bar', 'haz');
+        this.RenderChart(this.labelDataWee, this.weeWasteData, this.colorDataWee, 'bar', 'wee');
+        this.RenderChart(this.labelDataClinical, this.clinicalWasteData, this.colorDataClinical, 'bar', 'clinical');
+        this.RenderChart(this.labelDataDry, this.dryWasteData, this.colorDataDry, 'bar', 'dry');
+        // this.RenderChart(this.labelData, this.realData, this.colorData, 'doughnut', 'haz1');
         // this.RenderChart(this.labelData, this.realData, this.colorData, 'pie', 'piechart');
-        this.RenderChart(this.labelData, this.realData, this.colorData, 'doughnut', 'dochart');
+        // this.RenderChart(this.labelData, this.realData, this.colorData, 'doughnut', 'dochart');
         // this.RenderChart(this.labelData, this.realData, this.colorData, 'radar', 'radarchart');
         // this.RenderChart(this.labelData, this.realData, this.colorData, 'polarArea', 'pochart');
         // this.RenderChart(this.labelData, this.realData, this.colorData, 'bubble', 'bubblechart');
@@ -53,7 +110,7 @@ export class DashboardComponent implements OnInit {
   }
 
   RenderChart(labelData:any, mainData:any, colorData: any, type:any, id:any) {
-    const ctx = document.getElementById('piechart')
+    //const ctx = document.getElementById('piechart')
     new Chart(id, {
       type: type,
       data: {
@@ -79,7 +136,11 @@ export class DashboardComponent implements OnInit {
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            max: 30,  // Set y-axis max to container capacity
+            ticks: {
+          stepSize: 2  // Set step size on the y-axis, e.g., 5 units
+        }
           }
         }
       }

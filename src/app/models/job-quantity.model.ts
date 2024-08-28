@@ -1,5 +1,5 @@
 export interface JobQuantity {
-    id: number;
+    // id: number | undefined;
     Name: string;
     ContainerTypeId: number;
     ContainerWeight: number;

@@ -18,6 +18,11 @@ import { SignedOffItemComponent } from './signed-off-item/signed-off-item.compon
 import { UnsignedOffItemComponent } from './unsigned-off-item/unsigned-off-item.component';
 import { NewjobComponent } from './newjob/newjob.component';
 import { JobQuantityWeightComponent } from './job-quantity-weight/job-quantity-weight.component';
+import { ProcessingBayComponent } from './processing-bay/processing-bay.component';
+import { ToastComponent } from './toast/toast.component';
+import { ViewWeightDetailsComponent } from './view-weight-details/view-weight-details.component';
+import { OutbayComponent } from './outbay/outbay.component';
+import { UserManagementComponent } from './user-management/user-management.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +39,12 @@ import { JobQuantityWeightComponent } from './job-quantity-weight/job-quantity-w
     SignedOffItemComponent,
     UnsignedOffItemComponent,
     NewjobComponent,
-    JobQuantityWeightComponent
+    JobQuantityWeightComponent,
+    ProcessingBayComponent,
+    ToastComponent,
+    ViewWeightDetailsComponent,
+    OutbayComponent,
+    UserManagementComponent
   ],
   imports: [
     BrowserModule,

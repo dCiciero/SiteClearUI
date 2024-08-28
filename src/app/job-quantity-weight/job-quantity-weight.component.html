@@ -1,6 +1,42 @@
 <div class="wrapper" id="gaga">
     <h6>{{ driverNmae}}</h6>
     <form [formGroup]="jobQuantityForm">
+        <div class="row">
+          <div class="col-md-2 mb-2">
+            <div class="form-check">
+              <input class="form-check-input"  type="checkbox" [value]="applyAll" (change)="toggleApplyToAll($event)" id="txtApplyWeights">
+              <label class="form-check-label" for="txtApplyWeights">
+                Apply To All
+              </label>
+            </div>
+          </div> <!-- end col-md-2-->
+          <ng-container *ngIf="applyAll">
+            <div class="col-md-3">
+              <select id="inputState" 
+                  (change)="getSelectedContainer()" 
+                  [(ngModel)]="selectedContainer" [ngModelOptions]="{standalone: true}" 
+                  class="form-select">
+                <option selected>Choose...</option>
+                <option 
+                    *ngFor="let item of containerTypes"
+                    [ngValue]="item"
+                    value="{{ item.id}}"> {{ item.name}}
+                </option>
+            </select>
+            </div>
+            <div class="col-md-2">
+              <input type="email" class="form-control" 
+                  id="txtAllWeight"
+                  [(ngModel)]="weightForAll" [ngModelOptions]="{standalone: true}"
+                  placeholder="Weight">
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-sm btn-success" 
+                (click)="applyWeights()"
+                [disabled]="weightForAll < 1 || selectedContainer == null">Apply Weight</button>
+            </div>
+          </ng-container>
+        </div>
         <div class="row table-responsive">
             <table class="table table-stripped" style="width: 100%">
                 <thead>
@@ -20,8 +56,8 @@
                       <th>{{ i + 1 }}</th>
                       <td>{{ wasetName }}</td>
                       <td>
-                        <select id="inputState" (change)="getSelectedContainer()" formControlName="selectedContainerType"  class="form-select">
-                            <option selected>Choose...</option>
+                        <select id="ddlContainerType" (change)="getSelectedContainer()" formControlName="selectedContainerType"  class="form-select">
+                            <!-- <option selected>Choose...</option> -->
                             <option 
                                 *ngFor="let item of containerTypes"
                                 [ngValue]="item"

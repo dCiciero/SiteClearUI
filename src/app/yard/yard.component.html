@@ -6,8 +6,9 @@
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Incoming Jobs</button>
     <button class="nav-link" id="nav-signedJobs-tab" data-bs-toggle="tab" data-bs-target="#nav-signedJobs" type="button" role="tab" aria-controls="nav-signedJobs" aria-selected="false">Receiving Bay</button>
-    <button class="nav-link" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="false">Create Job</button>
-    <!-- <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false" disabled>Disabled</button> -->
+    <button class="nav-link" id="nav-processBay-tab" data-bs-toggle="tab" data-bs-target="#nav-processBay" type="button" role="tab" aria-controls="nav-processBay" aria-selected="false">Processing Bay</button>
+    <button class="nav-link" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="false" >Create Job</button>
+    <button class="nav-link" id="nav-outBay-tab" data-bs-toggle="tab" data-bs-target="#nav-outBay" type="button" role="tab" aria-controls="nav-outBay" aria-selected="false" >Awaiting Disposal</button>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -21,8 +22,11 @@
   <div class="tab-pane fade" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab" tabindex="0">
     <app-newjob></app-newjob>
   </div>
-  <div class="tab-pane fade" id="nav-disabled" role="tabpanel" aria-labelledby="nav-disabled-tab" tabindex="0">
-    <h1>Blessed</h1>
+  <div class="tab-pane fade" id="nav-processBay" role="tabpanel" aria-labelledby="nav-processBay-tab" tabindex="0">
+    <app-processing-bay></app-processing-bay>
+  </div>
+  <div class="tab-pane fade" id="nav-outBay" role="tabpanel" aria-labelledby="nav-outBay-tab" tabindex="0">
+    <app-outbay></app-outbay>
   </div>
 </div>
 

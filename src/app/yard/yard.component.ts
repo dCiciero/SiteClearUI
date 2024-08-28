@@ -33,7 +33,7 @@ export class YardComponent {
   isLoading: boolean = false; 
   // isDigit: boolean = true; 
 
-  constructor(private fb: FormBuilder, private apiService: AuthService, private elementRef: ElementRef<HTMLElement>) {
+  constructor(private fb: FormBuilder, public apiService: AuthService, private elementRef: ElementRef<HTMLElement>) {
     // this.form = fb.group({
     //   description: ['', Validators.required],
     //   weight: ['', Validators.required],

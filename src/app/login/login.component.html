@@ -1,10 +1,10 @@
-<div class="login-container">
+<div class="login-container shadow-lg p-3 mb-5 bg-body-tertiary rounded">
     <h3>Login</h3>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
-        <label for="" class="form-label">Username</label>
-        <input type="text" id="username" 
-            formControlName="username" 
+        <label for="" class="form-label">Email</label>
+        <input type="text" id="txtemail" 
+            formControlName="email" 
             name="username" required
             class="form-control">
       </div>

@@ -16,7 +16,8 @@ const routes: Routes = [
   //  },
   { path: 'dashboard', component: DashboardComponent}, //, canActivate: [AuthGuard] },
   { path: 'yard', component: YardComponent },
-  { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
+  { path: 'admin', component: AdminComponent},
+  { path: 'login',  component: LoginComponent },
   { path: '**', redirectTo: 'home' },
 ];
 

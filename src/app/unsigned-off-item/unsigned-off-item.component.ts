@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ApiResponse } from '../models/api-response.model';
 import moment from 'moment';
+import { ToastService } from '../services/toast.service';
 
 declare var bootstrap: any;
 
@@ -40,9 +41,10 @@ export class UnsignedOffItemComponent implements OnInit {
   driverName: string = "";
   wasteName: string = "";
   invoiceId: number = 0;
+  financialLineId: number = 0;
   
   
-  constructor(private fb: FormBuilder, private apiService: AuthService) {
+  constructor(private fb: FormBuilder, private apiService: AuthService, private toastService: ToastService) {
     this.form = fb.group({
       description: ['', Validators.required],
       weight: ['', Validators.required],
@@ -84,13 +86,14 @@ export class UnsignedOffItemComponent implements OnInit {
     this.jobs = [];
     if (this.endDate < this.startDate)
     {
-      this.displayAlert("danger", "End Date must be greater than or equal to start date", "Error");
-      this.alertMessage = "End Date must be greater than or equal to start date";
+      // this.displayAlert("danger", "End Date must be greater than or equal to start date", "Error");
+      this.toastService.showError("End Date must be greater than or equal to start date");
+      // this.alertMessage = "End Date must be greater than or equal to start date";
       this.isLoading=false;
       return;
     }
     else {
-      this.hideAlert();
+      // this.hideAlert();
 
       var requestParams = {
         // "Id": 2134,
@@ -107,14 +110,15 @@ export class UnsignedOffItemComponent implements OnInit {
             // })
             if (this.jobs.length == 0)
             {
-              this.displayAlert("info", "No record for selected date", "Info")
+              // this.displayAlert("info", "No record for selected date", "Info")
+              this.toastService.showInfo("No record for selected date");
               this.isToday = false;
               this.startDate = undefined;
               this.endDate = undefined;
 
-              setTimeout(() => {
-                this.hideAlert();
-              }, 5000);
+              // setTimeout(() => {
+              //   this.hideAlert();
+              // }, 5000);
             }
   
             this.jobs.forEach(job=> {
@@ -187,19 +191,27 @@ export class UnsignedOffItemComponent implements OnInit {
   checkWeight(data: any) {
     console.log(data)
   }
-  addWeight(data:{job: Jobs, jobDetail: JobDetails}) {
+
+  processWeight(data:{job: Jobs, jobDetail: JobDetails}) {
     this.quantityCount = data.jobDetail.lineQuantity;
     this.driverName = data.job.resource;
     this.wasteName = data.jobDetail.itemDescription;
     this.invoiceId = data.jobDetail.invoiceItemId;
+    // this.financialLineId = data.jobDetail.invoiceItemId;
+    this.weighedJob = data.jobDetail;
     console.log(this.quantityCount);
     this.showModal = true;
+  }
+  
+  //This method is to save the jobDetail
+  confirmJob(data:{job: Jobs, jobDetail: JobDetails}) {
+    
     // var modalElement = document.getElementById('gaga')
     // console.log(modalElement);
     
     // if (modalElement) {
-    //   const modal = new bootstrap.Modal(modalElement);
-    //   modal.show();
+      // const modal = new bootstrap.Modal(modalElement);
+      // modal.show();
     // }
 
     // setTimeout(() => {
@@ -213,17 +225,17 @@ export class UnsignedOffItemComponent implements OnInit {
     this.weighedJob.asset = data.job.asset;
     this.weighedJob.resource = data.job.resource;
 
-    if (data.jobDetail.weight <= 0 || !this.isDigit(data.jobDetail.weight.toString())) {
-      this.displayAlert("danger", "Enter a valid weight", "Error");
-      setTimeout(() => {
-        this.hideAlert();
-      }, 5000);
-      console.log(typeof this.weighedJob.weight);
-      console.log();
-      console.log(/^\d+$/.test(this.weighedJob.weight.toString()));
-      this.isLoading = false;
-      return;
-    }
+    // if (data.jobDetail.weight <= 0 || !this.isDigit(data.jobDetail.weight.toString())) {
+    //   this.displayAlert("danger", "Enter a valid weight", "Error");
+    //   setTimeout(() => {
+    //     this.hideAlert();
+    //   }, 5000);
+    //   console.log(typeof this.weighedJob.weight);
+    //   console.log();
+    //   console.log(/^\d+$/.test(this.weighedJob.weight.toString()));
+    //   this.isLoading = false;
+    //   return;
+    // }
     // if (typeof data.weight !== "number"){
     //   this.displayAlert("danger", "Enetr a valid weight", "Error");
       
@@ -232,14 +244,16 @@ export class UnsignedOffItemComponent implements OnInit {
     // }
 
     this.weighedJob.isConfirmed = !data.jobDetail.isConfirmed;
+    data.jobDetail.weight = 120; // This will be taken off later as it is no longer needed
     console.log(this.weighedJob);
-    return;
+    // return;
     this.apiService.saveJobItem(this.weighedJob)
       .subscribe((res: ApiResponse) => {
         console.log(res);
         if (res.isSuccess == true)
         {
-          this.displayAlert("success", "Successfully confirmed off", "Success");
+          // this.displayAlert("success", "Successfully confirmed", "Success");
+          this.toastService.showSuccess('Successfully confirmed');
           //this.getJobsByDate();
           // this.getSignedOffJobsByDate();
           

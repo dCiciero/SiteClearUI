@@ -5,6 +5,9 @@ import { AuthService } from '../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { group } from '@angular/animations';
 import { BayOptions } from '../models/bay-options.model';
+import { ToastService } from '../services/toast.service';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-signed-off-item',
@@ -34,7 +37,7 @@ export class SignedOffItemComponent implements OnInit {
   listOfHoldingingBays: any[]=[];
   // selectedBayOption: string = this.bayOptions[0];
 
-  constructor(private apiService: AuthService, private fb: FormBuilder) {
+  constructor(private apiService: AuthService, private fb: FormBuilder, private toastService: ToastService) {
     
   }
 
@@ -44,11 +47,12 @@ export class SignedOffItemComponent implements OnInit {
       selectedHoldingBay: [''],
       selectedProcessingBay: [''],
       netWeight: [''],
-      selectedBayOption: ['', Validators.required]
+      selectedBayOption: ['']
     });
 
     this.getHoldingBays();
     this.getProcessingingBays();
+    this.getConfirmedJobs();
   }
 
   getFormControlValue(controlName: string): any {
@@ -80,7 +84,7 @@ export class SignedOffItemComponent implements OnInit {
     })
   }
 
-  // This method gets the value of the Bay to send to when signing off
+  // This method gets the value (from radio btn) of the Bay to send to when signing off
   getSelectedBay(selectedBay: string) {
     console.log(selectedBay);
     this.signOffForm.get('selectedBayId').reset();
@@ -110,19 +114,38 @@ export class SignedOffItemComponent implements OnInit {
   }
 
 
-  processSignOff() {
-
+  processTransfer() {
+    // const toastNotification = document.getElementById('liveToast');
+    // if (toastNotification) {
+    //   console.log(toastNotification);
+    //   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastNotification)
+    //   toastBootstrap.show()
+    //   // toastTrigger.addEventListener('click', () => {
+    //   // })
+      
+    // }
+    
     console.log(this.signOffForm.value);
-    this.confirmedJobToSignOff.isSignedOff=true;
+    // this.confirmedJobToSignOff.isSignedOff=true;
+    this.confirmedJobToSignOff.processingBayId=this.signOffForm.get('selectedBayId')?.value;
     var updatedJob = this.confirmedJobToSignOff;
     console.log(this.confirmedJobToSignOff)
 
     this.apiService.updateJobItem(updatedJob).subscribe(
       (res) => {
-        
+        console.log(res)
+        if (res.isSuccess){
+          this.toastService.showSuccess('Operation succesful');
+          var modalClsBtn = document.querySelector('#btnCloseTransferModal') as HTMLElement;
+          if (modalClsBtn) {
+            console.log(modalClsBtn);
+            modalClsBtn.click();
+          }
+        }
       },
       (error) => {
-
+        console.log(error.error);
+        this.toastService.showError('Operation not succesful');    
       },
       () => {
 

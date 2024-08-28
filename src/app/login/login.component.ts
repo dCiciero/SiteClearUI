@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { first } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -10,28 +12,56 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class LoginComponent {
   loginForm: any = this.fb.group({
-    username: ['', Validators.required],
+    email: ['', Validators.required],
     password: ['', Validators.required]
   });
+  returnUrl: string = "/";
   // username: string = '';
   // password: string = '';
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService, 
+    private toastService: ToastService,
+    private router: Router,
+    private route: ActivatedRoute) { 
+      this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    }
 
   onSubmit() {
     // this.authService.login(this.username, this.password).subscribe(
     console.log(this.loginForm.value);
-    console.log(this.loginForm.get('username').value);
+    console.log(this.loginForm.get('email').value);
     //return;
-    var isLoginSuccessful = this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value);
-    if (isLoginSuccessful) {
+    this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess){
+            this.router.navigate([this.returnUrl]);
+            this.toastService.showSuccess("Login Successful");
+          } else {
+            this.toastService.showInfo(data.errorMessages.join(", ") );
+          }
+          
+          
+        },
+        error => {
+          console.log("Login failed", error);
+          this.toastService.showError("Login failed");
+          
+        }
+      );
+    // var isLoginSuccessful = this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value);
+    // if (isLoginSuccessful) {
       
-      this.router.navigate(['/']);
-    }
-    else {
-      this.errorMessage = 'Invalid username or password';
-    }
+    //   this.router.navigate(['/']);
+    // }
+    // else {
+    //   this.errorMessage = 'Invalid username or password';
+    // }
     /*
     this.authService.login(this.loginForm.get('username'), this.loginForm.get('password')).subscribe(
       response => {

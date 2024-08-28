@@ -1,3 +1,4 @@
+
 import { Inject, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
@@ -8,7 +9,15 @@ export const AuthGuard: CanActivateFn = (route, state) => {
 
   const isLoggedIn = authService.isLoggedIn();
   const userRole = authService.getUserRole();
-  const requiredRole = route.data['role'];
+  const allowedRoles = route.data['allowedRoles'] as string[];
+
+  if (authService.hasPermission(allowedRoles)) {
+    return true;
+  } else {
+    router.navigate(['/login'], { queryParams: { returnUrl: state.url }})
+    return false;
+  }
+
 
   if (authService.isAuth.value == false) {
     router.navigate(['/login'])
@@ -17,11 +26,12 @@ export const AuthGuard: CanActivateFn = (route, state) => {
   return authService.isAuth.value;
 };
 
+
 /*
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 
 @Injectable({
   providedIn: 'root'

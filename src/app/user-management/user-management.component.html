@@ -1,0 +1,105 @@
+<div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h5 class="p-3">User Account Management</h5>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="row g-3 p-3">
+        <div class="col-md-4">
+            <label for="txt_fname" class="form-label">First Name</label>
+            <input type="text" 
+                class="form-control" 
+                id="txt+fname" 
+                placeholder="First Name"
+                formControlName="firstName"
+                [ngClass]="userForm.get('firstName').invalid && userForm.get('firstName').touched ? 'control-error': ''"
+            >
+            @if (userForm.get('firstName').invalid && userForm.get('firstName').touched) {
+                <div class="error">First name is required and should be at least 2 characters long.</div>
+                }
+        </div>
+        <div class="col-md-4">
+            <label for="txt_lname" class="form-label">Last Name</label>
+            <input type="text" 
+                class="form-control" 
+                id="txt_lname"
+                placeholder="Last Name"
+                formControlName="lastName"
+                [ngClass]="userForm.get('lastName').invalid && userForm.get('lastName').touched ? 'control-error': ''"
+            >
+            @if (userForm.get('lastName').invalid && userForm.get('lastName').touched) {
+                <div class="error">Last name is required and should be at least 2 characters long.</div>
+              }
+        </div>
+        <div class="col-md-4">
+            <label for="txt_email" class="form-label">Email</label>
+            <input type="email" 
+                class="form-control" 
+                id="txt_email" 
+                placeholder="Email"
+                formControlName="email"
+            >
+            @if (userForm.get('email').invalid && userForm.get('email').touched) {
+                <div class="error">Please enter a valid email address.</div>
+              }
+        </div>
+
+        <div class="col-md-3">
+            <label for="txt_phone" class="form-label">Phone Numebr</label>
+            <input type="text" 
+                class="form-control" 
+                id="txt_phone" 
+                placeholder="Phone Number"
+                formControlName="phoneNumber"
+            >
+            @if (userForm.get('phoneNumber').invalid && userForm.get('phoneNumber').touched) {
+                <div class="error">Please enter a valid phone number.</div>
+              }
+        </div>
+
+        <div class="col-md-3">
+            <label for="txt_password" class="form-label">Password</label>
+            <input type="password" 
+                class="form-control" 
+                id="txt_password" 
+                placeholder="Password"
+                formControlName="password"
+                
+            >
+            @if (userForm.get('password').invalid && userForm.get('password').touched) {
+                <div class="error">
+                  Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
+                </div>
+              }
+        </div>
+        <div class="col-md-3">
+            <label for="txt_conf_password" class="form-label">Confirm Password</label>
+            <input type="password" 
+                class="form-control" 
+                id="txt_conf_password" 
+                placeholder="Confirm Password"
+                formControlName="password"
+            >
+            @if (userForm.hasError('passwordMismatch') && userForm.get('confirmPassword').touched) {
+                <div class="error">Passwords do not match.</div>
+              }
+        </div>
+        
+
+        <div class="col-md-3">
+            <label for="packageType" class="form-label">Select Role</label>
+            <select id="role"  formControlName="roleId"  class="form-select">
+                <option value="">Select a role</option>
+                @for (role of userRoles; track role) {
+                    <option [value]="role.id">{{ role.name }}</option>
+                  }
+                <!-- <option 
+                    *ngFor="let item of userRoles"
+                    [ngValue]="item"
+                    value="{{ item.id}}"> {{ item.name}}
+                </option> -->
+            </select>
+            @if (userForm.get('roleId').invalid && userForm.get('roleId').touched) {
+                <div class="error">Please select a role.</div>
+              }
+        </div>
+
+        <button type="submit" class="btn btn-sm btn-primary col-auto" [disabled]="userForm.invalid">Create User</button>
+    </form>
+</div>
