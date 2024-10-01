@@ -1,0 +1,51 @@
+<div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <div class="row table-responsive" *ngIf="processingBays.length > 0">
+  
+        <table class="table table-stripped table-light" style="width:100%">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              
+              <th scope="col">Assign to user</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            
+            <ng-container *ngFor="let bay of processingBays; let i = index">
+              <tr>
+                <th> {{ i+1 }}</th>
+                <td>{{ bay.name}}</td>
+                <!-- <td>{{ job.asset}}</td>
+                <td>{{ job.jobReference}}</td>
+                <td>{{ job.itemDescription }}</td>
+                <td>{{ job.processingBay.name }}</td> -->
+                <!-- <td>{{ job.weight }}</td> -->
+                
+                <td>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                            (change)="getSelectedPermission($event, bay)"
+                            type="checkbox" value="" id="chkBoxProcessBay">
+                        <!-- <label class="form-check-label" for="chkBoxProcessBay">
+                          Default checkbox
+                        </label> -->
+                    </div>
+                </td>
+               
+                
+              </tr>
+            </ng-container>
+           
+          </tbody>
+          <tfoot>
+            <button type="button" 
+                class="btn btn-sm btn-primary mt-2"
+                (click)="confirmSelection()" 
+            > Submit</button>
+          </tfoot>
+          
+        </table>
+        
+      </div>
+</div>

@@ -13,7 +13,7 @@ declare var bootstrap: any;
 })
 export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
   @Input() quantityCount: number=0;
-  @Input() driverNmae: string = "";
+  @Input() driverName: string = "";
   @Input() wasetName: string = "";
   @Input() invoiceId: number = 0;
   @Input() jobDetail: any;
@@ -25,9 +25,12 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
   selectedContainer: any;
   isFormFilled: boolean = false;
   weightForAll: number = 0;
+  totalNetWeight: number = 0;
   applyAll: boolean = false
 
-  constructor(private fb: FormBuilder, private apiService: AuthService, private toastService: ToastService) {}
+  constructor(private fb: FormBuilder, 
+              private apiService: AuthService, 
+              private toastService: ToastService) {}
 
   ngOnInit(): void {
    
@@ -139,6 +142,7 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
           Weight: data.value.weight,
           Name: this.wasetName
         };
+        this.totalNetWeight += data.value.netWeight;
         listOfJobQuantities.push(item);
         // this.processSave(data);
       });
@@ -166,6 +170,10 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
     //   Name: this.wasetName
     // };
     console.log(data);
+    console.log(this.totalNetWeight);
+    console.log(this.jobDetail);
+    this.toastService.showInfo("Do you want to save and confirm this job?");
+    return;
     // console.log(item);
     this.apiService.saveJobQuantity(data).subscribe(
       (resData) =>{
@@ -176,9 +184,11 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
           console.log(resData.result);
           
           console.log(this.jobDetail);
-          // this.jobDetail.isConfirmed = true;
+          
           console.log(data.value);
           this.jobDetail.isWeightAdded = true;
+          this.jobDetail.totalWeight = this.totalNetWeight;
+          // this.jobDetail.isConfirmed = true;
           setTimeout(() => {
             var modalCloseBtn = document.getElementsByClassName('cls-btn')[0] as HTMLElement
             if (modalCloseBtn) {

@@ -5,7 +5,7 @@ export interface JobDetails {
     lineType: string;
     currency: string;
     departmentCode: string;
-    weight: number;
+    totalWeight: number;
     jobId: number;
     jobReference: number;
     lineQuantity: number;

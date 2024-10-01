@@ -31,6 +31,7 @@ export class YardComponent {
   signedOffJob: JobDetails | undefined;
   showModal: boolean = false;
   isLoading: boolean = false; 
+  auth: any
   // isDigit: boolean = true; 
 
   constructor(private fb: FormBuilder, public apiService: AuthService, private elementRef: ElementRef<HTMLElement>) {
@@ -43,6 +44,7 @@ export class YardComponent {
     // const elementId = this.elementRef.nativeElement.id;
     // this.getSignedOffJobsByDate();
     // this.datepicker.datepicker();
+    this.auth = this.apiService;
   }
 
   

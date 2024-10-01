@@ -8,17 +8,24 @@ import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: ContentPageComponent },
   { path: 'login', component: LoginComponent },
+
+  { 
+    path: '', 
+    // canActivate: [AuthGuard], 
+    loadChildren: () => import('./modules/main/main.module').then(m => m.MainModule) 
+  },
+  { path: '**', redirectTo: '' },
+  
+  // { path: 'home', component: ContentPageComponent },
   // { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component')
   //     .then((m)=> m.DashboardComponent), canActivate: [authGuard]
   //  },
-  { path: 'dashboard', component: DashboardComponent}, //, canActivate: [AuthGuard] },
-  { path: 'yard', component: YardComponent },
-  { path: 'admin', component: AdminComponent},
-  { path: 'login',  component: LoginComponent },
-  { path: '**', redirectTo: 'home' },
+  // { path: 'dashboard', component: DashboardComponent}, //, canActivate: [AuthGuard] },
+  // { path: 'yard', component: YardComponent },
+  // { path: 'admin', component: AdminComponent},
+  // { path: 'login',  component: LoginComponent },
+  // { path: '**', redirectTo: 'home' },
 ];
 
 @NgModule({

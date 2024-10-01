@@ -1,5 +1,5 @@
 <div class="wrapper" id="gaga">
-    <h6>{{ driverNmae}}</h6>
+    <h6>{{ driverName}}</h6>
     <form [formGroup]="jobQuantityForm">
         <div class="row">
           <div class="col-md-2 mb-2">
@@ -97,6 +97,7 @@
                 <button 
                     class="btn btn-sm btn-primary" 
                     (click)="saveEntry(formElements.controls)"
+                    data-bs-target="#confirmModal" data-bs-toggle="modal"
                     [disabled]="!isFormFilled"
                 >
                     Save Entry
@@ -108,7 +109,26 @@
     
    
 </div>
+<!-- ******************************************************** -->
+<div class="modal fade" id="confirmModal" aria-hidden="true" aria-labelledby="confirmModalLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Confirm Action</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        By saving you are confriming the this job.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Cancel</button>
+        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- ******************************************************** -->
 <!-- =================================== -->
 <!-- <div class="modal fade" id="gaga" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" >

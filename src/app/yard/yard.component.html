@@ -7,8 +7,8 @@
     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Incoming Jobs</button>
     <button class="nav-link" id="nav-signedJobs-tab" data-bs-toggle="tab" data-bs-target="#nav-signedJobs" type="button" role="tab" aria-controls="nav-signedJobs" aria-selected="false">Receiving Bay</button>
     <button class="nav-link" id="nav-processBay-tab" data-bs-toggle="tab" data-bs-target="#nav-processBay" type="button" role="tab" aria-controls="nav-processBay" aria-selected="false">Processing Bay</button>
-    <button class="nav-link" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="false" >Create Job</button>
-    <button class="nav-link" id="nav-outBay-tab" data-bs-toggle="tab" data-bs-target="#nav-outBay" type="button" role="tab" aria-controls="nav-outBay" aria-selected="false" >Awaiting Disposal</button>
+    <button class="nav-link" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="false" *ngIf="auth.hasPermission(['super user','admin'])" >Create Job</button>
+    <button class="nav-link" id="nav-outBay-tab" data-bs-toggle="tab" data-bs-target="#nav-outBay" type="button" role="tab" aria-controls="nav-outBay" aria-selected="false" *ngIf="auth.hasPermission(['super user','admin'])">Awaiting Disposal</button>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">

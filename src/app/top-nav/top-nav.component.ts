@@ -12,17 +12,22 @@ export class TopNavComponent implements OnInit {
   userRole: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {
-    this.isLoggedIn = this.authService.isLoggedIn();
+    // this.isLoggedIn = this.authService.isLoggedIn();
+
   }
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();
     this.userRole = this.authService.getUserRole();
+    console.log(`logged In: ${this.isLoggedIn}`);
+    
   }
 
   logout() {
     this.authService.logout();
-    this.isLoggedIn = false;
+    // this.isLoggedIn = false;
+    console.log( this.authService.isLoggedIn());
+    
     this.userRole = null;
     this.router.navigate(['/login']);
   }

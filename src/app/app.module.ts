@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { YardComponent } from './yard/yard.component';
 import { AdminComponent } from './admin/admin.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JobDetailComponent } from './job-detail/job-detail.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { SignedOffItemComponent } from './signed-off-item/signed-off-item.component';
@@ -23,6 +23,11 @@ import { ToastComponent } from './toast/toast.component';
 import { ViewWeightDetailsComponent } from './view-weight-details/view-weight-details.component';
 import { OutbayComponent } from './outbay/outbay.component';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { authInterceptor } from './auth.interceptor';
+import { ProcessingBayUsersComponent } from './processing-bay-users/processing-bay-users.component';
+import { RepackagingComponent } from './components/repackaging/repackaging.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -44,7 +49,10 @@ import { UserManagementComponent } from './user-management/user-management.compo
     ToastComponent,
     ViewWeightDetailsComponent,
     OutbayComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    ProcessingBayUsersComponent,
+    RepackagingComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +61,12 @@ import { UserManagementComponent } from './user-management/user-management.compo
     HttpClientModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS, useClass: authInterceptor, multi: true
+    },
+    provideAnimationsAsync(),
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

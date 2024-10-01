@@ -5,6 +5,7 @@
         <a *ngIf="userRole === 'admin'" routerLink="/about">Admin</a>
         <a *ngIf="userRole === 'user'" routerLink="/contact">User</a>
         <a (click)="logout()" style="margin-left: auto; color: white; cursor: pointer;">Logout</a>
-    </div>
-    <a *ngIf="!isLoggedIn" routerLink="/login" style="margin-left: auto; color: white;">Login</a>     -->
+    </div>-->
+    <!-- {{ }} -->
+    <a *ngIf="isLoggedIn" (click)="logout()" style="margin-left: auto; color: white; cursor: pointer;">Logout</a>     
 </nav>

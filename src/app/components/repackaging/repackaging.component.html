@@ -1,0 +1,57 @@
+<div class="wrapper">
+    <!-- <h3>Re-Packaging Waste</h3> -->
+    <form [formGroup]="repackageForm" class="row g-3 p-3">
+        <div class="col-sm-12">
+            <label for="packageType" class="form-label">Container</label>
+            <select id="inputState" (change)="getSelectedContainer()" formControlName="containerId"  class="form-select">
+                <option selected>Choose...</option>
+                <option 
+                    *ngFor="let item of containerTypes"
+                    [ngValue]="item.id"
+                    value="{{ item.id}}"> {{ item.name}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-sm-12">
+            <label for="totalQty" class="form-label">Total Quantity</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="totalQty"
+                [readonly]="true"
+                [ngClass]="{'disabledBg': true}"
+                formControlName="totalQty">
+        </div>
+
+        <div class="col-sm-12">
+            <label for="unit" class="form-label">Unit</label>
+            <input type="text" 
+                class="form-control" 
+                id="unit" 
+                (keyup.enter)="calculatePercentage()"
+                formControlName="unit">
+        </div>
+
+        <div class="col-sm-12">
+            <label for="percentageQty" class="form-label">Percentage Value</label>
+            <input type="text" 
+                class="form-control" 
+                id="percentageQty" 
+                [readonly]="true"
+                [ngClass]="{'disabledBg': true}"
+                formControlName="percentageValue">
+        </div>
+        <div class="col-sm-12">
+            <label for="availableQty" class="form-label">Available Quantity</label>
+            <input type="text" 
+                class="form-control" 
+                id="availableQty"
+                [readonly]="true"
+                [ngClass]="{'disabledBg': true}"
+                formControlName="availableQty">
+        </div>
+
+        
+    </form>
+</div>

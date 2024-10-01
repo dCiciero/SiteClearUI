@@ -26,6 +26,7 @@ export class ProcessingBayComponent implements OnInit {
   isLoading: boolean = false;
   jobQuantities: any[]=[];
   filterText: any;
+  displayRepackageModal: boolean = false;
 
   constructor(private apiService: AuthService, private fb: FormBuilder, private toastService: ToastService) {
     
@@ -82,33 +83,34 @@ export class ProcessingBayComponent implements OnInit {
   }
  
 
-
+// This function is to signOff jobs from the processing bay
   processSignOff(data: any) {
-
-    console.log(this.signOffForm.value);
-    console.log(data);
     this.confirmedJobToSignOff = data
-    this.confirmedJobToSignOff.isSignedOff=true;
-    this.confirmedJobToSignOff.signOffDate= moment(new Date()).format('YYYY-MM-DD, h:mm:ss');
-    var updatedJob = this.confirmedJobToSignOff;
-    console.log(this.confirmedJobToSignOff)
+    this.displayRepackageModal = true
+    // console.log(this.signOffForm.value);
+    // console.log(data);
+    // this.confirmedJobToSignOff = data
+    // this.confirmedJobToSignOff.isSignedOff=true;
+    // this.confirmedJobToSignOff.signOffDate= moment(new Date()).format('YYYY-MM-DD');
+    // var updatedJob = this.confirmedJobToSignOff;
+    // console.log(this.confirmedJobToSignOff)
 
-    this.apiService.updateJobItem(updatedJob).subscribe(
-      (res) => {
-        console.log(res)
-        if (res.isSuccess) {
-          this.toastService.showSuccess("Job has been successfully signed off");
-          this.getConfirmedJobs();
-        }
-      },
-      (error) => {
-        console.log(error.error);
-        this.toastService.showError("An error occured while signing of tje job. Please try again");
-      },
-      () => {
+    // this.apiService.updateJobItem(updatedJob).subscribe(
+    //   (res) => {
+    //     console.log(res)
+    //     if (res.isSuccess) {
+    //       this.toastService.showSuccess("Job has been successfully signed off");
+    //       this.getConfirmedJobs();
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log(error.error);
+    //     this.toastService.showError("An error occured while signing of tje job. Please try again");
+    //   },
+    //   () => {
 
-      }
-    )
+    //   }
+    // )
   }
 
   getDataToSignOff(data: any) {

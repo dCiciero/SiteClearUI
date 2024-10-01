@@ -12,9 +12,12 @@ import { ToastService } from '../services/toast.service';
 })
 export class LoginComponent {
   loginForm: any = this.fb.group({
-    email: ['', Validators.required],
-    password: ['', Validators.required]
+    email: [''],
+    signInCode: [''],
+    loginOption: [false],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
+  // yardSignIn: boolean = false;
   returnUrl: string = "/";
   // username: string = '';
   // password: string = '';
@@ -27,23 +30,32 @@ export class LoginComponent {
     private router: Router,
     private route: ActivatedRoute) { 
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+      console.log(this.returnUrl);
+      
     }
 
   onSubmit() {
     // this.authService.login(this.username, this.password).subscribe(
     console.log(this.loginForm.value);
     console.log(this.loginForm.get('email').value);
-    //return;
-    this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value)
+    // this.router.navigate([this.returnUrl]);
+    // return;
+    let signInOption = this.loginOption.value;
+    let loginParam = !signInOption ? this.loginForm.get('email').value : this.loginForm.get('signInCode').value
+    this.authService.login(loginParam, this.loginForm.get('password').value, this.loginOption.value)
       .pipe(first())
       .subscribe(
-        data => {
+        (data) => {
           console.log(data);
           if (data.isSuccess){
+            console.log(data.result);
+            console.log(localStorage.getItem('currentUser'));
+            
             this.router.navigate([this.returnUrl]);
             this.toastService.showSuccess("Login Successful");
           } else {
             this.toastService.showInfo(data.errorMessages.join(", ") );
+            this.errorMessage = data.errorMessages.join(", ")
           }
           
           
@@ -54,6 +66,7 @@ export class LoginComponent {
           
         }
       );
+
     // var isLoginSuccessful = this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value);
     // if (isLoginSuccessful) {
       
@@ -62,6 +75,8 @@ export class LoginComponent {
     // else {
     //   this.errorMessage = 'Invalid username or password';
     // }
+
+    // ****************************************************************//
     /*
     this.authService.login(this.loginForm.get('username'), this.loginForm.get('password')).subscribe(
       response => {
@@ -76,5 +91,26 @@ export class LoginComponent {
       }
     );
     */
+  }
+
+  get loginOption() {
+    return this.loginForm.get('loginOption')
+  }
+  get loginEmail() {
+    return this.loginForm.get('email')
+  }
+
+  get loginCode() {
+    return this.loginForm.get('signInCode')
+  }
+
+  signInOption() {
+    console.log(this.loginForm.value);
+    console.log(this.loginOption.value);
+    if (this.loginOption.value) {
+      this.loginEmail.value = '';
+    } else {
+      this.loginCode.value = '';
+    }
   }
 }

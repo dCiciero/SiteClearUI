@@ -129,7 +129,7 @@ export class UnsignedOffItemComponent implements OnInit {
                   });
   
                   job.jobDetails.map(ele => {
-                    ele.weight = 0;
+                    ele.totalWeight = 0;
                     ele.isConfirmed = false;
                     ele.furtherProcessing = false;
                   });
@@ -244,7 +244,7 @@ export class UnsignedOffItemComponent implements OnInit {
     // }
 
     this.weighedJob.isConfirmed = !data.jobDetail.isConfirmed;
-    data.jobDetail.weight = 120; // This will be taken off later as it is no longer needed
+    // data.jobDetail.totalWeight = 120; // This will be taken off later as it is no longer needed
     console.log(this.weighedJob);
     // return;
     this.apiService.saveJobItem(this.weighedJob)

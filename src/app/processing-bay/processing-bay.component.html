@@ -61,7 +61,8 @@
               <td>
                 <button type="button" 
                     class="btn btn-sm btn-primary"
-                    
+                    data-bs-toggle="modal" 
+                    data-bs-target="#staticBackdropRepackaging"
                     (click)="processSignOff(job)"
                 > Complete Process
                 </button>
@@ -100,6 +101,7 @@
     </div>
 </div>
 
+<!-- The below is the modal to view weight details -->
 <div class="modal fade" id="staticBackdropProcessingBay" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" id="qty-detail-modal">
     <div class="modal-content">
@@ -113,6 +115,28 @@
           [jobQuantities]="jobQuantities"
         >
         </app-view-weight-details>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cls-btn" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- The below is the modal for repackaging waste -->
+<div class="modal fade" id="staticBackdropRepackaging" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="repackaging-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title fs-5" id="staticBackdropLabel">Repackaging Wastes</h3>
+        <button type="button" class="btn-close cls-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <app-repackaging 
+        *ngIf="displayRepackageModal"
+          [financialItem]="confirmedJobToSignOff">
+        </app-repackaging>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary cls-btn" data-bs-dismiss="modal">Cancel</button>

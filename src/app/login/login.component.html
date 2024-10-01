@@ -1,24 +1,55 @@
-<div class="login-container shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+<div class="login-container d-flex justify-content-center align-items-center" style="height: 100vh;">
+  <div class="login-form shadow-lg p-3 mb-5  rounded ">
     <h3>Login</h3>
+    
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
+      <div class="form-check form-switch">
+        <input class="form-check-input" 
+        type="checkbox" role="switch" 
+        formControlName="loginOption"
+        (ngModelChange)="signInOption()" 
+        id="flexSwitchCheckChecked">
+        <label class="form-check-label" for="flexSwitchCheckChecked">Sign-in as yard operator</label>
+      </div>
+
+      <div class="mb-3" *ngIf="!loginForm.get('loginOption').value">
         <label for="" class="form-label">Email</label>
-        <input type="text" id="txtemail" 
+        <input type="email" id="txtemail" 
             formControlName="email" 
-            name="username" required
+            placeholder="Email"
+            name="username"
             class="form-control">
       </div>
+      <div class="mb-3" *ngIf="loginForm.get('loginOption').value">
+        <label for="txt_loginSignInCode" class="form-label">Sign-In Code</label>
+        <input type="text" 
+            class="form-control" 
+            id="txt_loginSignInCode" 
+            placeholder="Sign-In Code"
+
+            formControlName="signInCode"
+        >
+    </div>
       <div class="mb-3">
         <label for="" class="form-label">Password</label>
         <input type="password" id="password" 
             formControlName="password" 
             name="password" required
-            class="form-control">
+            placeholder="Password"
+            class="form-control"
+            [ngClass]="loginForm.get('password').invalid && loginForm.get('password').touched ? 'control-error': ''"
+          >
+          @if (loginForm.get('password').invalid && loginForm.get('password').touched) {
+            <div class="error">
+              Password must be at least 8 characters long..
+            </div>
+            }
       </div>
-      <button class="btn btn-sm" type="submit">Login</button>
+      <button class="btn btn-primary" [disabled]="loginForm.invalid" type="submit">Login</button>
     </form>
-    <div *ngIf="errorMessage" class="error">
+    <div *ngIf="errorMessage" class="error text-center">
       {{ errorMessage }}
     </div>
-  </div>
+  </div>  
+</div>
   

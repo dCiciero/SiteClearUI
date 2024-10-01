@@ -1,6 +1,6 @@
 
-import { Inject, inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import {  CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 export const AuthGuard: CanActivateFn = (route, state) => {
@@ -10,7 +10,11 @@ export const AuthGuard: CanActivateFn = (route, state) => {
   const isLoggedIn = authService.isLoggedIn();
   const userRole = authService.getUserRole();
   const allowedRoles = route.data['allowedRoles'] as string[];
-
+  console.log(allowedRoles);
+  console.log(route);
+  
+  //
+  // if (isLoggedIn) {
   if (authService.hasPermission(allowedRoles)) {
     return true;
   } else {

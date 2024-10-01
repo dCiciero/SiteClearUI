@@ -13,6 +13,7 @@ export class AuthService {
   public isAuth = new BehaviorSubject<boolean>(false);
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
+
   // private currentUserSignal = signal<User | null>(null);
   // currentUser$ = computed(() => this.currentUserSignal());
 
@@ -23,10 +24,12 @@ export class AuthService {
   listOfProcssingBays: any[]=[];
   userRole = "";
   containerTypes: any[]=[];
+  private loggedIn: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) { 
     this.currentUserSubject = new BehaviorSubject<User | null>(JSON.parse(localStorage.getItem('currentUser') || 'null'));
     this.currentUser = this.currentUserSubject.asObservable();
+    
 
     // const storedUser = localStorage.getItem('currentUser');
     // if (storedUser) {
@@ -58,19 +61,26 @@ export class AuthService {
   }
 
   
-  login(username: string, password: string): Observable<any> {
+  login(loginParam: string, password: string, loginWithCode: boolean): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const body = JSON.stringify({ username, password });
+    const body = JSON.stringify({ loginParam, password, loginWithCode });
     // this.isAuth.next(true);
-    return this.http.post<User>(`${this.apiUrl}/useraccount/login`, body, { headers })
+    return this.http.post<any>(`${this.apiUrl}/useraccount/login`, body, { headers })
       .pipe(map(user => {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
+        console.log(user);
+        
+        if (user.isSuccess)
+        {
+          var loggedInUser = user.result
+          console.log(loggedInUser);
+          this.setUserDetail(loggedInUser);
+          // localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(loggedInUser);
+          this.loggedIn =true
+          
+        }
         return user;
-      }));
-
-
-    
+      }));    
   }
   
 
@@ -83,18 +93,40 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('currentUser');
+    this.clearUserDetails();
     this.currentUserSubject.next(null);
     // this.isAuth.next(false);
-    // this.router.navigate(['/login']);
+    this.router.navigate(['/login']);
+  }
+
+  setUserDetail(data: any) {
+    localStorage.setItem('token', JSON.stringify(data.token));
+    localStorage.setItem('email', JSON.stringify(data.email));
+    localStorage.setItem('userId', JSON.stringify(data.id));
+    localStorage.setItem('fullName', JSON.stringify(data.fullName));
+    localStorage.setItem('roleId', JSON.stringify(data.roleId));
+    localStorage.setItem('signInCOde', JSON.stringify(data.signInCOde));
+    localStorage.setItem('currentUser', JSON.stringify(data));
+  }
+
+  clearUserDetails() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId') 
+    localStorage.removeItem('fullName');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('signInCOde');
+    localStorage.removeItem('currentUser');
   }
 
   hasPermission(allowedRoles: string[]): boolean {
     const user = this.currentUserValue;
+    // console.log(user);
+    
     if (!user) return false;
-    return user.roles.some(role => allowedRoles.includes(role));
+    // return true;
+    return allowedRoles.includes(user.role);
+    // return user.roles.some(role => allowedRoles.includes(role));
   }
 
 
@@ -197,6 +229,8 @@ export class AuthService {
   getJobQuantitiesByInvoiceId(invoiceId: any): Observable<any> {
     return this.http.get(`${this.apiUrl}/wastes/JobItemQuantities/${invoiceId}`)
   }
+
+  
 
   // displayAlert(type: string, message: string, messageType: string) {
   //   this.messageType = messageType;
