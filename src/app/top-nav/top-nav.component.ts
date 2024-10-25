@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class TopNavComponent implements OnInit {
   isLoggedIn: boolean = false;
   userRole: string | null = null;
+  loggedInUser: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {
     // this.isLoggedIn = this.authService.isLoggedIn();
@@ -20,6 +21,7 @@ export class TopNavComponent implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
     this.userRole = this.authService.getUserRole();
     console.log(`logged In: ${this.isLoggedIn}`);
+    this.loggedInUser = localStorage.getItem('fullName'); //?.replace(/"/g, '',);
     
   }
 

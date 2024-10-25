@@ -3,7 +3,7 @@
 </div>
 <div *ngIf="!isLoading" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
   <div class="wrapper p-3">
-    <h5 class="mb-2">Operations Yard</h5>
+    <h3 class="mb-2">Operations Yard</h3>
     <!-- <p>Welcome to the yard processing page!</p> -->
     <div
       *ngIf="alertMessage != ''"
@@ -15,7 +15,7 @@
     </div>
     <div class="col-md-2 mb-2">
       <div class="form-check">
-        <input class="form-check-input"  type="checkbox" [value]="isToday" (change)="setToday()" id="flexCheckDefault">
+        <input class="form-check-input"  type="checkbox" [(ngModel)]="isToday" (change)="setToday()" id="flexCheckDefault">
         <label class="form-check-label" for="flexCheckDefault">
           Get Today's Job
         </label>
@@ -85,7 +85,7 @@
             placeholder="Filter by driver name">
         </div>
       </div>
-      <table class="table table-stripped" style="width: 100%">
+      <table class="table table-striped" style="width: 100%">
         <thead>
           <tr>
             <th scope="col">#</th>

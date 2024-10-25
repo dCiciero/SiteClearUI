@@ -1,5 +1,5 @@
 <div class="wrapper" id="gaga">
-    <h6>{{ driverName}}</h6>
+    <h4>{{ driverName}}</h4>
     <form [formGroup]="jobQuantityForm">
         <div class="row">
           <div class="col-md-2 mb-2">
@@ -97,7 +97,6 @@
                 <button 
                     class="btn btn-sm btn-primary" 
                     (click)="saveEntry(formElements.controls)"
-                    data-bs-target="#confirmModal" data-bs-toggle="modal"
                     [disabled]="!isFormFilled"
                 >
                     Save Entry
@@ -110,7 +109,7 @@
    
 </div>
 <!-- ******************************************************** -->
-<div class="modal fade" id="confirmModal" aria-hidden="true" aria-labelledby="confirmModalLabel" tabindex="-1">
+<!-- <div class="modal fade" id="confirmModal" aria-hidden="true" aria-labelledby="confirmModalLabel" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -126,7 +125,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- ******************************************************** -->
 <!-- =================================== -->

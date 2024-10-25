@@ -32,19 +32,17 @@ export class NewjobComponent implements OnInit {
       packageType: ['', Validators.required],
       outBayId: ['', Validators.required],
     });
-    
-
-    this.getAllOutgoingJobs();
-    this.getContainerTypes();
-    this.getWasteStreams();
-    this.loadOutBays();
-    this.getProcessingingBays();
-    console.log(apiService.loadOutBays());
-    console.log(apiService.listOfHoldingBays);
   }
 
   ngOnInit(): void {
     this.onFilterChange();
+    this.getAllOutgoingJobs();
+    // this.getContainerTypes();
+    this.getWasteStreams();
+    this.loadOutBays();
+    this.getProcessingingBays();
+    console.log(this.apiService.loadOutBays());
+    console.log(this.apiService.listOfHoldingBays);
   }
 
   getAllOutgoingJobs() {
@@ -85,6 +83,7 @@ export class NewjobComponent implements OnInit {
       packageType: this.form.get('packageType').value.name,
       packageSize: this.form.get('packageType').value.weight,
       wasteStreamId: this.form.get('wasteStream').value.id,
+      processedById: localStorage.getItem('userId'),
       // wasteCategoryId: this.form.get('wasteStream').value.Id,
       dateCreated: moment(new Date()).format('YYYY-MM-DD')
     };
@@ -143,6 +142,10 @@ export class NewjobComponent implements OnInit {
   get netWeight() {
     return this.form.get('netWeight')?.value;
   }
+
+  get SelectedProcessingBayId(){
+    return this.form.get('processingBayId');
+  }
   loadOutBays() {
     this.apiService.getOutBays().subscribe(res => {
       if (res.isSuccess) {
@@ -189,6 +192,28 @@ export class NewjobComponent implements OnInit {
     console.log(evt.target.value);
     this.form.get('processingBayId').value = evt.target.value;
     console.log(this.form.value)
+    console.log(this.SelectedProcessingBayId.value)
+    this.apiService.getContainersByProcessingBayId(this.SelectedProcessingBayId.value).subscribe(
+      (res: any) => {
+        if (res.isSuccess) {
+          if (res.result.length > 0) {
+            this.containerTypes = res.result
+          } else {
+            this.toastService.showInfo("Selected bay is empty");
+            this.containerTypes = [];
+            return;
+          }
+          
+        }
+        else {
+          this.toastService.showError("Could not retrieve containers in selected bay")
+        }
+      },
+      (error: any) => {
+        console.log(error.error);
+        this.toastService.showError("Error occured");
+      }
+    )
   }
 
   toggleDisplayJobs() {
@@ -204,6 +229,8 @@ export class NewjobComponent implements OnInit {
 
   getSelectedContainer() {
     console.log(this.form.value);
+    // console.log(event);
+
     // console.log(this.jobQuantityForm.get('selectedContainerType')?.value);
     
   }
@@ -234,8 +261,11 @@ export class NewjobComponent implements OnInit {
 
   sendForDisposal(data: any) {
     data.isSentForDisposal = true;
+    data.dateDisposed = moment(new Date()).format('YYYY-MM-DD')
     console.log(data);
     this.apiService.updateWaste(data).subscribe(res => {
+      console.log(res);
+      
       if (res.isSuccess) {
         // this.listOfJobs = res.result;
         // this.filteredJobs = this.listOfJobs

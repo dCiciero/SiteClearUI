@@ -1,5 +1,5 @@
 <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-    <h5 class="p-3">Processing Bay</h5>
+    <h3 class="p-3">Processing Bay</h3>
     <!-- <div class="mb-3">
       <button type="button" 
         (click)="getConfirmedJobs()" 
@@ -8,139 +8,48 @@
         View Jobs
       </button>
     </div> -->
-    <div class="row table-responsive" *ngIf="confirmedJobs.length > 0">
-
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label for="txtLocation" class="form-label">Enter Location (Processing Bay) Name</label>
-          <input type="email" class="form-control" 
-            id="txtLocation"
-            [(ngModel)]="filterText" 
-            (ngModelChange)="onFilterChange(filterText)"
-            placeholder="Filter by location">
-        </div>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab-processing-bay" role="tablist">
+        <button 
+          class="nav-link active" 
+          id="nav-incoming-jobs-tab" 
+          data-bs-toggle="tab" 
+          data-bs-target="#nav-incoming-jobs" 
+          type="button" role="tab" 
+          aria-controls="nav-incoming-jobs" 
+          aria-selected="true"
+        >Incoming Jobs</button>
+        <button 
+          class="nav-link" 
+          id="nav-outgoing-jobs-tab" 
+          data-bs-toggle="tab" 
+          data-bs-target="#nav-outgoing-jobs" 
+          type="button" 
+          role="tab" 
+          aria-controls="nav-outgoing-jobs" 
+          aria-selected="false"
+        >Outgoing Jobs</button>
       </div>
+    </nav>
+    
+    <!-- ****************************************************************************** -->
 
-      <table class="table table-stripped" style="width:100%">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Resource</th>
-            <th scope="col">Vehicle</th>
-            <th scope="col">Ref. No</th>
-            <th scope="col">Description</th>
-            <th scope="col">Location</th>
-            <!-- <th scope="col">Weight</th> -->
-            <th scope="col">View</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          
-          <ng-container *ngFor="let job of paginatedItems; let i = index">
-            <tr>
-              <th> {{ i+1 }}</th>
-              <td>{{ job.resource}}</td>
-              <td>{{ job.asset}}</td>
-              <td>{{ job.jobReference}}</td>
-              <td>{{ job.itemDescription }}</td>
-              <td>{{ job.processingBay.name }}</td>
-              <!-- <td>{{ job.weight }}</td> -->
-              
-              <td>
-                <button type="button" 
-                    class="btn btn-sm btn-info"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#staticBackdropProcessingBay"
-                    (click)="getJobQuantities(job.invoiceItemId)"
-                > View Details
-                </button>
-              </td>
-             
-              
-              <td>
-                <button type="button" 
-                    class="btn btn-sm btn-primary"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#staticBackdropRepackaging"
-                    (click)="processSignOff(job)"
-                > Complete Process
-                </button>
-              </td>
-            </tr>
-          </ng-container>
-         
-        </tbody>
-        <tfoot>
-          <button type="button" 
-            (click)="getConfirmedJobs()" 
-            class="btn btn-success mt-2"
-          >
-            Refresh
-          </button>
-        </tfoot>
-      </table>
-      <nav aria-label="Page navigation">
-
-        <ul class="pagination  justify-content-center">
-          <li class="page-item" [class.disabled]="currentPage === 1" *ngIf="currentPage !== 1">
-            <a class="page-link btn btn-sm btn-outline-primary" (click)="goToPage(1)"> First </a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <a class="page-link btn btn-sm btn-outline-primary mx-1 " (click)="goToPage(currentPage - 1)">{{currentPage}}</a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
-            <a class="page-link btn btn-sm me-1 rounded btn-outline-primary" (click)="goToPage(currentPage + 1)">{{ currentPage + 1 }}</a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === getTotalPages()" *ngIf="currentPage !== getTotalPages()">
-            <a class="page-link btn btn-sm btn-outline-primary" (click)="goToPage(getTotalPages())">Last</a>
-          </li>
-        </ul>
-        
-      </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active p-3" id="nav-incoming-jobs" role="tabpanel" aria-labelledby="nav-incoming-jobs-tab" tabindex="0">
+        <app-process-bay-in-jobs></app-process-bay-in-jobs>
+      </div>
+    
+      <div class="tab-pane fade p-3" id="nav-outgoing-jobs" role="tabpanel" aria-labelledby="nav-outgoing-jobs-tab" tabindex="0">
+        <app-process-bay-out-jobs></app-process-bay-out-jobs>
+      </div>
+      
     </div>
-</div>
 
-<!-- The below is the modal to view weight details -->
-<div class="modal fade" id="staticBackdropProcessingBay" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" id="qty-detail-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title fs-5" id="staticBackdropLabel">Details</h3>
-        <button type="button" class="btn-close cls-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <app-view-weight-details 
-          *ngIf="jobQuantities.length > 0"
-          [jobQuantities]="jobQuantities"
-        >
-        </app-view-weight-details>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cls-btn" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
+    <!-- ****************************************************************************** -->
+
+    
 </div>
 
 
-<!-- The below is the modal for repackaging waste -->
-<div class="modal fade" id="staticBackdropRepackaging" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="repackaging-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title fs-5" id="staticBackdropLabel">Repackaging Wastes</h3>
-        <button type="button" class="btn-close cls-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <app-repackaging 
-        *ngIf="displayRepackageModal"
-          [financialItem]="confirmedJobToSignOff">
-        </app-repackaging>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cls-btn" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+

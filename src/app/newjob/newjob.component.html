@@ -2,12 +2,12 @@
     <app-loading-spinner></app-loading-spinner>
 </div>
 
-<div *ngIf="!isLoading">
+<div *ngIf="!isLoading" >
     <!-- <div *ngIf="alertMessage != '' " class="alert alert-{{alertType}} alert-dismissible" role="alert">
         <strong>{{messageType}}!</strong> {{ alertMessage }}    
     </div> -->
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-        <h5 class="p-3">Create New Job</h5>
+        <h3 class="p-3">Create New Job</h3>
         <form [formGroup]="form" class="row g-3 p-3">
             <!-- <div class="row"> -->
 
@@ -19,7 +19,7 @@
                         (change)="getSelectedProcessingBay($event)" 
                         formControlName="processingBayId" 
                         class="form-select">
-                        <option selected>Choose Processing Bay</option>
+                        <option *ngIf="listOfProcessingBays.length === 0" selected>Choose Processing Bay</option>
                         <option 
                             *ngFor="let processBay of listOfProcessingBays"
                             [value]="processBay.id"> {{ processBay.name}}</option>
@@ -29,7 +29,7 @@
                     <label for="wasteStream" class="form-label">Waste Stream</label>
                     <!-- <input type="text" class="form-control" formControlName="wasteStream" id="wasteStream"> -->
                     <select id="inputState" (change)="getSelectedWasteStream()" formControlName="wasteStream"  class="form-select">
-                        <option selected>Choose...</option>
+                        <option *ngIf="wasteStreams.length === 0" selected>Choose...</option>
                         <option 
                             *ngFor="let item of wasteStreams"
                             [ngValue]="item"
@@ -43,7 +43,7 @@
                     <label for="itemDescription" class="form-label">Destination (Holding Bay)</label>
                     <!-- <input type="text" class="form-control" id="itemDescription" formControlName="itemDescription"> -->
                     <select id="inputState" (change)="selectedOutBay($event)" formControlName="outBayId"  class="form-select">
-                    <option selected>Choose...</option>
+                    <option *ngIf="outBays.length === 0" selected>Choose...</option>
                     <option 
                         *ngFor="let outBay of outBays"
                         value="{{ outBay.id}}"> {{ outBay.name}}</option>
@@ -52,7 +52,7 @@
                 <div class="col-md-4">
                     <label for="packageType" class="form-label">Container</label>
                     <select id="inputState" (change)="getSelectedContainer()" formControlName="packageType"  class="form-select">
-                        <option selected>Choose...</option>
+                        <option *ngIf="containerTypes.length === 0" selected>Choose...</option>
                         <option 
                             *ngFor="let item of containerTypes"
                             [ngValue]="item"
@@ -104,8 +104,9 @@
             </div>
         </form>
         
+        
         <!-- This is the control to search (filter) -->
-        <div class="table-responsive mt-3 " *ngIf="displayJobs" >
+        <div class="table-responsive mt-3 p-3" *ngIf="displayJobs" >
             <div class="row mb-3">
                 <div class="col-md-12">
                   <label for="txtLocation" class="form-label">Enter Location (Processing Bay) Name</label>
@@ -116,10 +117,21 @@
                     placeholder="Filter by location">
                 </div>
               </div>
-            <table class="table table-stripped " style="width:100%">
+              <div class="row">
+                <div class="col-sm-4">
+                    <button type="button" 
+                  (click)="getAllOutgoingJobs()" 
+                  class="btn btn-success mt-2"
+                >
+                  Refresh
+                </button>
+                </div>
+              </div>
+            <table class="table table-striped " style="width:100%">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Code</th>
                     <th scope="col">Waste Stream</th>
                     <th scope="col">Net Weight</th>
                     <th scope="col">Date Created</th>
@@ -134,7 +146,8 @@
                   
                   <ng-container *ngFor="let job of filteredJobs; let i = index">
                     <tr>
-                      <th> {{ i+1 }}</th>
+                      <th scope="row"> {{ i+1 }}</th>
+                      <td> {{ job.ewcCode }} </td>
                       <td>{{ job.wasteStream?.name}}</td>
                       <td>{{ job.weight}}</td>
                       <td>{{ job.dateCreated | date: 'dd/MM/yyyy' }} </td>
@@ -153,12 +166,12 @@
                   </ng-container>
                  
                 </tbody>
-                <tfoot>
+                <!-- <tfoot>
                     <button type="button" 
                         class="btn btn-sm btn-success mt-2"
                         (click)="getAllOutgoingJobs()" 
                         > Refresh</button>
-                </tfoot>
+                </tfoot> -->
             </table>
         </div>
     </div>

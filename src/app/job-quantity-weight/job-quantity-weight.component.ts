@@ -3,6 +3,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { JobQuantity } from '../models/job-quantity.model';
 import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
+import { ConfirmationService } from '../services/confirmation.service';
+import { ApiResponse } from '../models/api-response.model';
 
 declare var bootstrap: any;
 
@@ -27,10 +29,13 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
   weightForAll: number = 0;
   totalNetWeight: number = 0;
   applyAll: boolean = false
+  isLoading: boolean = false; 
 
   constructor(private fb: FormBuilder, 
               private apiService: AuthService, 
-              private toastService: ToastService) {}
+              private toastService: ToastService,
+              private confirmationService: ConfirmationService
+            ) {}
 
   ngOnInit(): void {
    
@@ -86,7 +91,7 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
 
   getSelectedContainer() {
     console.log(this.jobQuantityForm.value);
-    console.log(this.selectedContainer);
+    console.log(this.formElements);
     // console.log(this.jobQuantityForm.get('selectedContainerType')?.value);
     
   }
@@ -127,16 +132,17 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
 
     const formData = this.formElements.controls; // This gets the data (formData) from each row in the table
     // var filledForm: boolean = true;
-    console.log(formData);
+    // console.log(formData);
     // return;
     let listOfJobQuantities: JobQuantity[]=[]
+    let financialItemsAndJobQuantities = {};
     // The below process will need to be modified to pass the object as an array rather than passing individaul object
     try {
       formData.forEach((data) => {
         const item: JobQuantity = {
           ContainerTypeId: data.value.selectedContainerType.id,
           ContainerWeight: data.value.selectedContainerType.weight,
-          FinancialLineItemId: 11,
+          FinancialLineItemId: 0,
           InvoiceItemId: this.invoiceId,
           NetWeight: data.value.netWeight,
           Weight: data.value.weight,
@@ -147,10 +153,20 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
         // this.processSave(data);
       });
 
+      this.jobDetail.isWeightAdded = true;
+      this.jobDetail.totalWeight = this.totalNetWeight;
+      this.jobDetail.isConfirmed = true;
+      this.jobDetail.processedById = localStorage.getItem('userId');
+
+      financialItemsAndJobQuantities = {
+        financialLineItem: this.jobDetail,
+        jobQuantityRequestDTOs: listOfJobQuantities
+      };
       console.log(listOfJobQuantities);
-      this.processSave(listOfJobQuantities);
+      console.log(financialItemsAndJobQuantities);
+      this.processSave(financialItemsAndJobQuantities);
       
-      // return;
+      //  return;
     } catch (error) {
       this.jobDetail.isWeightAdded = false;
     }
@@ -170,25 +186,73 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
     //   Name: this.wasetName
     // };
     console.log(data);
-    console.log(this.totalNetWeight);
-    console.log(this.jobDetail);
-    this.toastService.showInfo("Do you want to save and confirm this job?");
+    // console.log(this.totalNetWeight);
+    // this.jobDetail.isWeightAdded = true;
+    // this.jobDetail.totalWeight = this.totalNetWeight;
+    // this.jobDetail.isConfirmed = true;
+    // console.log(this.jobDetail);
+    // return
+    this.confirmationService.confirm({
+      title: 'Confirm Save?',
+      message: 'This action will save this entry and confirm the job.',
+      confirmText: 'Yes, Save',
+      cancelText: 'No, Cancel',
+      confirmButtonType: 'warning'
+    }).subscribe(result => {
+      if (result) {
+        console.log('Saving item...');
+        console.log(result);
+        this.saveJobDetailsWithAddedWeight(data);
+        // this.saveJobQuantityWeights(data);
+        
+        // Perform delete action
+      }
+    });
     return;
     // console.log(item);
+    
+  }
+
+  //This function is used to save the captured weights of each job quantity. (Recent refactoring has made it irrelevant and will be removed later)
+  saveJobQuantityWeights(data: any) {
     this.apiService.saveJobQuantity(data).subscribe(
       (resData) =>{
         if (resData.isSuccess) {
-          // this.apiService.displayAlert("success", "Record saved successfully", "Success");
-          this.toastService.showSuccess('Record saved successfully');
           console.log('Saved successfully');
           console.log(resData.result);
-          
           console.log(this.jobDetail);
-          
           console.log(data.value);
-          this.jobDetail.isWeightAdded = true;
-          this.jobDetail.totalWeight = this.totalNetWeight;
+          // this.jobDetail.isWeightAdded = true;
+          // this.jobDetail.totalWeight = this.totalNetWeight;
           // this.jobDetail.isConfirmed = true;
+          console.log('confirming job details');
+          
+          this.saveJobDetailsWithAddedWeight(this.jobDetail);
+          // setTimeout(() => {
+          //   var modalCloseBtn = document.getElementsByClassName('cls-btn')[0] as HTMLElement
+          //   if (modalCloseBtn) {
+          //     modalCloseBtn.click();
+          //   }
+          // }, 2000);
+          
+        }
+      },
+      (error) => {
+        this.toastService.showError("Error saving record");
+        console.log(error);
+      }
+    )
+  }
+
+  // This operation saves the job details(FinancialLineItems) as confirmed job and also the added weights for each quantity
+  //This inserts new record into FinancialLineItems table
+  saveJobDetailsWithAddedWeight(weightedJob: any) {
+    this.apiService.saveJobItem(weightedJob)
+      .subscribe((res: ApiResponse) => {
+        console.log(res);
+        if (res.isSuccess == true)
+        {
+          this.toastService.showSuccess('Successfully confirmed');
           setTimeout(() => {
             var modalCloseBtn = document.getElementsByClassName('cls-btn')[0] as HTMLElement
             if (modalCloseBtn) {
@@ -196,22 +260,21 @@ export class JobQuantityWeightComponent implements OnInit, AfterViewInit {
             }
           }, 2000);
           
-          
-          // setTimeout(() => {
-          //   this.apiService.hideAlert();
-          // }, 5000);
         }
+        else {
+          this.toastService.showError("Error making sign off request "+ res.errorMessages.join(" "));
+          console.log();
+        }
+        this.isLoading = false;
       },
-      (error) => {
-        // this.apiService.displayAlert("danger", "Error saving record", "Error");
-        this.toastService.showError("Error saving record");
-          // setTimeout(() => {
-          //   this.apiService.hideAlert();
-          // }, 5000);
-      }
-    )
+    error => {
+      console.log(error);
+      this.toastService.showError("Error making sign off request:\n" + error.error);
+      console.log(error.error);
+      
+      this.isLoading = false;
+    })
   }
-
   // This method is used to check if all details(row) have been entered
   checkFormCompleteness(): boolean {
     const formData = this.formElements.controls;

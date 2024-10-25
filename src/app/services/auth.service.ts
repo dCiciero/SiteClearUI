@@ -100,12 +100,12 @@ export class AuthService {
   }
 
   setUserDetail(data: any) {
-    localStorage.setItem('token', JSON.stringify(data.token));
-    localStorage.setItem('email', JSON.stringify(data.email));
-    localStorage.setItem('userId', JSON.stringify(data.id));
-    localStorage.setItem('fullName', JSON.stringify(data.fullName));
-    localStorage.setItem('roleId', JSON.stringify(data.roleId));
-    localStorage.setItem('signInCOde', JSON.stringify(data.signInCOde));
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('email', data.email);
+    localStorage.setItem('userId', data.id);
+    localStorage.setItem('fullName', data.fullName);
+    localStorage.setItem('roleId', data.roleId);
+    localStorage.setItem('signInCOde', data.signInCOde);
     localStorage.setItem('currentUser', JSON.stringify(data));
   }
 
@@ -163,7 +163,7 @@ export class AuthService {
   }
 
   updateWaste(waste: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/wastes`, waste);
+    return this.http.patch(`${this.apiUrl}/wastes`, waste);
   }
 
   getJobsByDate(reqParams: any): Observable<any> {
@@ -175,9 +175,12 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/wastes/jobDetailsById`, {params: requestParams});
   }
 
+  getPendingConfirmedJobs(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/wastes/pendingConfirmedJobs`);
+  }
+
    // This is for saving the job detail when the signoff button is clicked
-  saveJobItem(jobDetail: any): Observable<any>
-  {
+  saveJobItem(jobDetail: any): Observable<any>{
     return this.http.post(`${this.apiUrl}/wastes/saveJobItem`, jobDetail);
   }
 
@@ -189,6 +192,11 @@ export class AuthService {
   // This is for retrieving the job details from jobDetail Component
   getJobDetails(): Observable<any>  {
     return this.http.get(`${this.apiUrl}/wastes/jobDetails`);
+  }
+
+   // This is for retrieving the job details to be signed off
+   getJobDetailsForSignOff(): Observable<any>  {
+    return this.http.get(`${this.apiUrl}/wastes/jobsForSignOff`);
   }
 
   getOutBays(): Observable<any> {
@@ -217,6 +225,10 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/wastes/AllContainerTypes`);
   }
 
+  getContainersByProcessingBayId(id: number): Observable<any>  {
+    return this.http.get(`${this.apiUrl}/wastes/AllContainersInProcessingBay/${id}`);
+  }
+
   getWasteStreams(): Observable<any> {
     return this.http.get(`${this.apiUrl}/wastes/AllWasteStreams`);
   }
@@ -230,6 +242,25 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/wastes/JobItemQuantities/${invoiceId}`)
   }
 
+  createRepackagedWaste(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/wastes/RepackageWaste`, data);
+  }
+
+  getRepackagedWastes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/wastes/RepackageWaste`);
+  }
+
+  getCompletedWeightedJobs(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/wastes/WeightedJobs`);
+  }
+
+  getCompletedWeightedJobsByJobId(param:any): Observable<any> {
+    return this.http.get(`${this.apiUrl}/wastes/WeightedJobsByJobIb/${param}`);
+  }
+
+  postWorksheetData(param: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/wastes/PostWorksheetData`, param);
+  }
   
 
   // displayAlert(type: string, message: string, messageType: string) {

@@ -1,20 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { JobDetails } from '../models/job-details.model';
-import { Jobs } from '../models/jobs.model';
-import { AuthService } from '../services/auth.service';
+import { JobDetails } from '../../models/job-details.model';
+import { BayOptions } from '../../models/bay-options.model';
+import { AuthService } from '../../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { group } from '@angular/animations';
-import { BayOptions } from '../models/bay-options.model';
-import { ToastService } from '../services/toast.service';
-
-declare var bootstrap: any;
+import { ToastService } from '../../services/toast.service';
 
 @Component({
-  selector: 'app-signed-off-item',
-  templateUrl: './signed-off-item.component.html',
-  styleUrl: './signed-off-item.component.scss'
+  selector: 'app-pending-confirmed-jobs',
+  templateUrl: './pending-confirmed-jobs.component.html',
+  styleUrl: './pending-confirmed-jobs.component.scss'
 })
-export class SignedOffItemComponent implements OnInit {
+export class PendingConfirmedJobsComponent implements OnInit {
   //paginatedItems: { job: Jobs, jobDetail: JobDetails }[] = [];;
   signOffForm: any;
   paginatedItems: any[] = [];
@@ -116,16 +112,6 @@ export class SignedOffItemComponent implements OnInit {
 
   //This methods simply calls the endpoint to update the ProcessingBayId of the FinancialLineItems
   processTransfer() {
-    // const toastNotification = document.getElementById('liveToast');
-    // if (toastNotification) {
-    //   console.log(toastNotification);
-    //   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastNotification)
-    //   toastBootstrap.show()
-    //   // toastTrigger.addEventListener('click', () => {
-    //   // })
-      
-    // }
-    
     console.log(this.signOffForm.value);
     // this.confirmedJobToSignOff.isSignedOff=true;
     this.confirmedJobToSignOff.processingBayId=this.signOffForm.get('selectedBayId')?.value;
@@ -180,15 +166,5 @@ export class SignedOffItemComponent implements OnInit {
     this.updatePaginatedItems();
   }
 
-  displayAlert(type: string, message: string, messageType: string) {
-    this.messageType = messageType;
-    this.alertType = type;
-    this.alertMessage = message;
-  }
-
-  hideAlert() {
-    this.alertMessage = "";
-    this.alertType = "";
-    this.messageType = "";
-  }
+  
 }

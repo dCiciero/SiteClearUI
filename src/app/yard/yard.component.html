@@ -1,3 +1,4 @@
+
 <!-- <div *ngIf="isLoading">
   <app-loading-spinner></app-loading-spinner>
 </div> -->
@@ -9,6 +10,7 @@
     <button class="nav-link" id="nav-processBay-tab" data-bs-toggle="tab" data-bs-target="#nav-processBay" type="button" role="tab" aria-controls="nav-processBay" aria-selected="false">Processing Bay</button>
     <button class="nav-link" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="false" *ngIf="auth.hasPermission(['super user','admin'])" >Create Job</button>
     <button class="nav-link" id="nav-outBay-tab" data-bs-toggle="tab" data-bs-target="#nav-outBay" type="button" role="tab" aria-controls="nav-outBay" aria-selected="false" *ngIf="auth.hasPermission(['super user','admin'])">Awaiting Disposal</button>
+    <button class="nav-link" id="nav-weightedJobs-tab" data-bs-toggle="tab" data-bs-target="#nav-weightedJobs" type="button" role="tab" aria-controls="nav-outBay" aria-selected="false" *ngIf="auth.hasPermission(['super user','admin'])">Post weights to BigChange</button>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -17,7 +19,8 @@
   </div>
 
   <div class="tab-pane fade" id="nav-signedJobs" role="tabpanel" aria-labelledby="nav-signedJobs-tab" tabindex="0">
-    <app-signed-off-item></app-signed-off-item>
+    <app-pending-confirmed-jobs></app-pending-confirmed-jobs>
+    <!-- <app-signed-off-item></app-signed-off-item> -->
   </div>
   <div class="tab-pane fade" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab" tabindex="0">
     <app-newjob></app-newjob>
@@ -27,6 +30,9 @@
   </div>
   <div class="tab-pane fade" id="nav-outBay" role="tabpanel" aria-labelledby="nav-outBay-tab" tabindex="0">
     <app-outbay></app-outbay>
+  </div>
+  <div class="tab-pane fade" id="nav-weightedJobs" role="tabpanel" aria-labelledby="nav-weightedJobs-tab" tabindex="0">
+    <app-bigchange-reconciliation></app-bigchange-reconciliation>
   </div>
 </div>
 

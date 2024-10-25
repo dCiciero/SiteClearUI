@@ -96,7 +96,21 @@ export class UserManagementComponent implements OnInit {
     if (this.userForm.valid) {
       console.log(this.userForm.value);
       let reqParams = this.userForm.value
-      this.userService.createUserAcct(reqParams).subscribe(
+      let userParam = {
+        "firstName": reqParams.firstName,
+        "lastName": reqParams.lastName,
+        "password": reqParams.password,
+        // "email": reqParams.email,
+        "loginWithCode": reqParams.loginWithCode,
+        "loginParam": reqParams.loginWithCode ? reqParams.signInCode : reqParams.email ,
+        "phoneNumber": reqParams.phoneNumber,
+        "userRoleId": reqParams.roleId,
+        // "signInCode": reqParams.signInCode
+      }
+
+      console.log(userParam);
+      // return;
+      this.userService.createUserAcct(userParam).subscribe(
         (res: any) => {
           console.log(res);
         },

@@ -9,7 +9,16 @@
         <button type="button" class="btn-close" (click)="removeToast(i)"></button>
       </div>
       <div class="toast-body rounded" [ngClass]="'text-bg-' + toast.type">
+        <!-- <span class="icon">&excl;</span> -->
         {{toast.message}}
       </div>
     </div>
 </div>
+
+<!-- <div class="toast-container">
+  
+  <div class="toast-content">
+    <span class="icon">!</span>
+    <span>Web Worx</span>
+  </div>
+</div> -->

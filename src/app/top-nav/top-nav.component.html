@@ -1,11 +1,19 @@
-<nav>
-    <h2>Site Clear</h2>
-    <!-- <a routerLink="/login" style="margin-left: auto; color: white;">Login</a> -->
-    <!-- <div *ngIf="isLoggedIn">
-        <a *ngIf="userRole === 'admin'" routerLink="/about">Admin</a>
-        <a *ngIf="userRole === 'user'" routerLink="/contact">User</a>
-        <a (click)="logout()" style="margin-left: auto; color: white; cursor: pointer;">Logout</a>
-    </div>-->
-    <!-- {{ }} -->
-    <a *ngIf="isLoggedIn" (click)="logout()" style="margin-left: auto; color: white; cursor: pointer;">Logout</a>     
-</nav>
+<div class="">
+    <nav class="navbar navbar-expand-lg">
+        <div class="me-auto mb-2 mb-lg-0">
+            <h2 style=" color: white;" class="navbar-brand ms-3 mb-0 h1" href="#">Site Clear</h2>
+            <!-- <h2 class="">Site Clear</h2> -->
+        </div>
+        <!-- <a routerLink="/login" style="margin-left: auto; color: white;">Login</a> -->
+        <!-- <div *ngIf="isLoggedIn">
+            <a *ngIf="userRole === 'admin'" routerLink="/about">Admin</a>
+            <a *ngIf="userRole === 'user'" routerLink="/contact">User</a>
+            <a (click)="logout()" style="margin-left: auto; color: white; cursor: pointer;">Logout</a>
+        </div>-->
+        <!-- {{ }} -->
+        <div *ngIf="isLoggedIn" class="d-flex me-3 mt-3">
+            <h4 class="me-5 mt-2 fst-italic">Welcome {{loggedInUser}}.</h4>
+            <h4 (click)="logout()" class="btn btn-outline-light" style=" color: white; cursor: pointer;">Logout</h4>     
+        </div>
+    </nav>
+</div>

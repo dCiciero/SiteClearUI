@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { JobDetails } from '../models/job-details.model';
-import { ToastService } from '../services/toast.service';
-import moment from 'moment';
+import { ToastService } from '../../services/toast.service';
+import { JobDetails } from '../../models/job-details.model';
 
 @Component({
-  selector: 'app-processing-bay',
-  templateUrl: './processing-bay.component.html',
-  styleUrl: './processing-bay.component.scss'
+  selector: 'app-process-bay-in-jobs',
+  templateUrl: './process-bay-in-jobs.component.html',
+  styleUrl: './process-bay-in-jobs.component.scss'
 })
-export class ProcessingBayComponent implements OnInit {
+export class ProcessBayInJobsComponent implements OnInit {
   signOffForm: any;
   // paginatedItems: any[] = [];
   pageSize = 10;
@@ -19,7 +18,7 @@ export class ProcessingBayComponent implements OnInit {
   alertMessage: string = "";
   alertType: string = "";
   messageType: string = "";
-  confirmedJobs: JobDetails[]=[];
+  transferedJobsToSign: JobDetails[]=[];
   paginatedItems: JobDetails[]=[];
   confirmedJobToSignOff: any; // JobDetails | undefined;
   showModal: boolean = false;
@@ -41,30 +40,32 @@ export class ProcessingBayComponent implements OnInit {
       selectedBayOption: ['']
     });
     this.onFilterChange();
-    this.getConfirmedJobs();
+    this.getJobsToSignOff();
 
   }
 
   getFormControlValue(controlName: string): any {
     return this.signOffForm.get(controlName)?.value;
   }
-  getConfirmedJobs() {
-    this.apiService.getJobDetails()
+  getJobsToSignOff() {
+    this.apiService.getJobDetailsForSignOff()
       .subscribe((res: any) => {
         console.log(res);
-        //this.confirmedJobs = res.result;
+        // this.confirmedJobs = res.result;
         console.log(res.result);
-        this.confirmedJobs = res.result.filter((element: any) => {
-          return element.processingBay !== null && !element.isSignedOff
-        });
-        this.paginatedItems = this.confirmedJobs;
+        this.transferedJobsToSign = res.result;
+        // this.confirmedJobs = res.result.filter((element: any) => {
+        //   return element.processingBay !== null && !element.isSignedOff
+        // });
+        this.paginatedItems = this.transferedJobsToSign;
+        console.log(this.transferedJobsToSign)
         
       },error => {
         console.log("Error getting signed off data");
       })
   }
   onFilterChange(text: string='') {
-    const filteredItems = this.filterItems(this.confirmedJobs, text);
+    const filteredItems = this.filterItems(this.transferedJobsToSign, text);
     console.log(filteredItems);
     this.paginatedItems = filteredItems;
     
@@ -148,31 +149,17 @@ export class ProcessingBayComponent implements OnInit {
     console.log("Getting paginated items");
     
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    this.paginatedItems = this.confirmedJobs.slice(startIndex, startIndex + this.pageSize);
-    // return this.jobs.slice(startIndex, endIndex);
-    //this.paginatedItems = this.jobs.slice(startIndex, startIndex + this.pageSize);
+    this.paginatedItems = this.transferedJobsToSign.slice(startIndex, startIndex + this.pageSize);
   }
 
   getTotalPages(): number {
     // const totalItems = this.jobs.reduce((count, parent) => count + parent.jobDetails.length, 0);
     // return Math.ceil(totalItems / this.pageSize);
-    return Math.ceil(this.confirmedJobs.length / this.pageSize);
+    return Math.ceil(this.transferedJobsToSign.length / this.pageSize);
   }
 
   goToPage(page: number): void {
     this.currentPage = page;
     this.updatePaginatedItems();
-  }
-
-  displayAlert(type: string, message: string, messageType: string) {
-    this.messageType = messageType;
-    this.alertType = type;
-    this.alertMessage = message;
-  }
-
-  hideAlert() {
-    this.alertMessage = "";
-    this.alertType = "";
-    this.messageType = "";
   }
 }

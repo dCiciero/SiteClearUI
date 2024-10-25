@@ -61,7 +61,7 @@ export class UnsignedOffItemComponent implements OnInit {
   }
 
   setToday() {
-    this.isToday = !this.isToday
+    // this.isToday = !this.isToday
     var date = new Date();
     console.log(this.isToday);
     console.log(date);
@@ -131,7 +131,7 @@ export class UnsignedOffItemComponent implements OnInit {
                   job.jobDetails.map(ele => {
                     ele.totalWeight = 0;
                     ele.isConfirmed = false;
-                    ele.furtherProcessing = false;
+                    // ele.furtherProcessing = false;
                   });
                   
                 }
@@ -145,7 +145,8 @@ export class UnsignedOffItemComponent implements OnInit {
             this.isLoading = false;
         },
           error =>{
-            this.displayAlert("danger", "Error getting record. Try again", "Error");
+            // this.displayAlert("danger", "Error getting record. Try again", "Error");
+            this.toastService.showError( "Error getting record. Try again");
             console.log(error);
             this.isLoading = false;
             return;
@@ -198,7 +199,13 @@ export class UnsignedOffItemComponent implements OnInit {
     this.wasteName = data.jobDetail.itemDescription;
     this.invoiceId = data.jobDetail.invoiceItemId;
     // this.financialLineId = data.jobDetail.invoiceItemId;
+    // this.weighedJob = data.jobDetail;
     this.weighedJob = data.jobDetail;
+    this.weighedJob.asset = data.job.asset;
+    this.weighedJob.resource = data.job.resource;
+    this.weighedJob.jobCount = data.job.jobDetails.length; //this is for job with same refNo/jobId
+    console.log(this.weighedJob);
+    console.log(data.job.jobDetails.length);
     console.log(this.quantityCount);
     this.showModal = true;
   }

@@ -1,0 +1,128 @@
+<div class="row table-responsive" *ngIf="transferedJobsToSign.length > 0">
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label for="txtLocation" class="form-label">Enter Location Name</label>
+        <input type="text" class="form-control" 
+          id="txtProcessBayInLocation"
+          [(ngModel)]="filterText" 
+          (ngModelChange)="onFilterChange(filterText)"
+          placeholder="Filter by location">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4">
+          <button type="button" 
+        (click)="getJobsToSignOff()" 
+        class="btn btn-success mt-2"
+      >
+        Refresh
+      </button>
+      </div>
+    </div>
+    <table class="table table-striped" style="width:100%">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Driver</th>
+          <th scope="col">Vehicle</th>
+          <th scope="col">Ref. No</th>
+          <th scope="col">Description</th>
+          <th scope="col">Location</th>
+          <!-- <th scope="col">Weight</th> -->
+          <th scope="col">View</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        
+        <ng-container *ngFor="let job of paginatedItems; let i = index">
+          <tr>
+            <th> {{ i+1 }}</th>
+            <td>{{ job.resource}}</td>
+            <td>{{ job.asset}}</td>
+            <td>{{ job.jobReference}}</td>
+            <td>{{ job.itemDescription }}</td>
+            <td>{{ job.processingBay.name }}</td>
+            <!-- <td>{{ job.weight }}</td> -->
+            
+            <td>
+              <button type="button" 
+                  class="btn btn-sm btn-info"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#staticBackdropProcessingBay"
+                  (click)="getJobQuantities(job.invoiceItemId)"
+              > View Details
+              </button>
+            </td>
+           
+            
+            <td>
+              <button type="button" 
+                  class="btn btn-sm btn-primary"
+                  data-bs-toggle="modal" 
+                  data-bs-target="#staticBackdropRepackaging"
+                  (click)="processSignOff(job)"
+              > Complete Process
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+       
+      </tbody>
+      <!-- <tfoot>
+        <button type="button" 
+          (click)="getConfirmedJobs()" 
+          class="btn btn-success mt-2"
+        >
+          Refresh
+        </button>
+      </tfoot> -->
+    </table>
+    
+</div>
+
+
+  <!-- The below is the modal to view weight details -->
+<div class="modal fade" id="staticBackdropProcessingBay" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" id="qty-detail-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title fs-5" id="staticBackdropLabel">Details</h3>
+          <button type="button" class="btn-close cls-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <app-view-weight-details 
+            *ngIf="jobQuantities.length > 0"
+            [jobQuantities]="jobQuantities"
+          >
+          </app-view-weight-details>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary cls-btn" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- The below is the modal for repackaging waste -->
+<div class="modal fade" id="staticBackdropRepackaging" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="repackaging-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="staticBackdropLabel">Repackaging Wastes</h4>
+          <button type="button" class="btn-close cls-btn" data-bs-dismiss="modal" (click)="closeRepackagingModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <app-repackaging 
+          *ngIf="displayRepackageModal"
+            [financialItem]="confirmedJobToSignOff">
+          </app-repackaging>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary cls-btn" (click)="closeRepackagingModal()" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>

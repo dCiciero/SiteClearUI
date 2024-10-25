@@ -28,6 +28,13 @@ import { ProcessingBayUsersComponent } from './processing-bay-users/processing-b
 import { RepackagingComponent } from './components/repackaging/repackaging.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmationService } from './services/confirmation.service';
+import { ProcessBayOutJobsComponent } from './components/process-bay-out-jobs/process-bay-out-jobs.component';
+import { ProcessBayInJobsComponent } from './components/process-bay-in-jobs/process-bay-in-jobs.component';
+import { PaginatorComponent } from './components/paginator/paginator.component';
+import { BigchangeReconciliationComponent } from './components/bigchange-reconciliation/bigchange-reconciliation.component';
+import { PendingConfirmedJobsComponent } from './components/pending-confirmed-jobs/pending-confirmed-jobs.component';
 
 @NgModule({
   declarations: [
@@ -53,15 +60,21 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     ProcessingBayUsersComponent,
     RepackagingComponent,
     ConfirmationDialogComponent,
+    ProcessBayOutJobsComponent,
+    ProcessBayInJobsComponent,
+    PaginatorComponent,
+    BigchangeReconciliationComponent,
+    PendingConfirmedJobsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
-  providers: [
+  providers: [ConfirmationService,
     {
       provide: HTTP_INTERCEPTORS, useClass: authInterceptor, multi: true
     },

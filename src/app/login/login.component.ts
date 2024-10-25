@@ -50,6 +50,7 @@ export class LoginComponent {
           if (data.isSuccess){
             console.log(data.result);
             console.log(localStorage.getItem('currentUser'));
+            console.log(localStorage.getItem('fullName'));
             
             this.router.navigate([this.returnUrl]);
             this.toastService.showSuccess("Login Successful");
