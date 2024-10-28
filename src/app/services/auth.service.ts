@@ -4,12 +4,13 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../models/api-response.model';
 import { User } from '../models/user.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7194/api';  // Replace with your API URL https://localhost:7194/api/useraccount/login
+  private apiUrl = environment.baseUrl; 
   public isAuth = new BehaviorSubject<boolean>(false);
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
